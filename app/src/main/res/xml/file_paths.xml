@@ -1,0 +1,5 @@
+<!-- https://developer.android.com/training/secure-file-sharing/setup-sharing#DefineMetaData -->
+<paths>
+    <!-- URLs will look like: content://com.liorhass.android.usbterminal.free.fileprovider/logs/UsbTerminal_20220301_100309.log.zip  -->
+    <cache-path path="/" name="logs"  />
+</paths>

@@ -1,0 +1,210 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--
+        Copyright 2022 Lior Hass
+        Licensed under the Apache License, Version 2.0 (the "License");
+        you may not use this file except in compliance with the License.
+        You may obtain a copy of the License at
+        http://www.apache.org/licenses/LICENSE-2.0
+        Unless required by applicable law or agreed to in writing, software
+        distributed under the License is distributed on an "AS IS" BASIS,
+        WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+        See the License for the specific language governing permissions and
+        limitations under the License.
+    -->
+    <string name="app_name">UsbTerminal</string>
+    <string name="app_name_in_about_screen">UsbTerminal</string>
+    <string name="usb_communication_service_description">USB Comm Service</string>
+    <string name="log_start_msg">=-=-=-= UsbTerminal log start: %1$s =-=-=-=\n</string>
+    <string-array name="about_text_in_about_screen">
+        <item>
+            Copyright \(C\) 2022 Lior Hass
+        </item>
+        <item>
+        </item>
+        <item>
+            UsbTerminal is a free and open-source app. Its source code is available
+            at GitHub at https://www.github.com/liorhass.
+        </item>
+        <item>
+            To learn about UsbTerminal\'s features and usage please go to the help screen.
+        </item>
+        <item>
+            UsbTerminal is a hobby project of one person. As such, it doesn\'t go through rigorous
+            quality-assurance (QA) process. Take that into consideration. If you do
+            use the app and find bugs, or if you have improvement suggestions, please
+            let me know at GitHub or drop me an email at lior.apps@gmail.com.
+        </item>
+    </string-array>
+    <string name="privacy">Privacy</string>
+    <string-array name="privacy_text_in_about_screen">
+        <item>
+            Your data stays on your device. UsbTerminal never sends any data over the
+            Internet. In fact, UsbTerminal does not do any Internet communication for
+            any reason.
+        </item>
+        <item>
+            If you have any questions or suggestions about this Privacy Policy, do
+            not hesitate to contact me at lior.apps@gmail.com
+        </item>
+    </string-array>
+    <string name="third_party">Third-party libraries</string>
+    <string-array name="third_party_text_in_about_screen">
+        <item>
+            UsbTerminal is using the following libraries. I want to thank their
+            creators and maintainers.
+        </item>
+        <item>
+            usb-serial-for-android https://github.com/mik3y/usb-serial-for-android
+        </item>
+        <item>
+            Compose-Settings https://github.com/alorma/Compose-Settings
+        </item>
+    </string-array>
+
+    <string name="terminal_screen_title">Terminal</string>
+    <string name="device_list_screen_title">USB Devices</string>
+    <string name="settings_screen_title">Settings</string>
+    <string name="about_screen_title">About</string>
+    <string name="help_screen_title">Help</string>
+    <string name="log_files_screen_top_appbar_normal_title">Log Files</string>
+    <string name="log_files_screen_top_appbar_cab_title">%1$d selected</string>
+
+    <string name="usb_comm_service_notification_channel_name">USB Comm Service</string>
+
+    <string name="menu">Menu</string>
+    <string name="back">Back</string>
+    <string name="clear">Clear</string>
+    <string name="yes_all_caps">YES</string>
+    <string name="cancel_all_caps" tools:ignore="ButtonCase">CANCEL</string>
+    <string name="connect_all_caps">CONNECT</string>
+    <string name="ctrl">Ctrl</string>
+    <string name="left">Left</string>
+    <string name="down">Down</string>
+    <string name="up">Up</string>
+    <string name="right">Right</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
+    <string name="display_type_indicator_txt">TXT</string>
+    <string name="display_type_indicator_hex">HEX</string>
+    <string name="clear_screen">Clear screen</string>
+    <string name="toggle_hex_text">Toggle hex text</string>
+    <string name="arrows_keypad">Arrows keypad</string>
+    <string name="more">More</string>
+    <string name="set_dtr">Set DTR</string>
+    <string name="clear_dtr">Clear DTR</string>
+    <string name="set_rts">Set RTS</string>
+    <string name="clear_rts">Clear RTS</string>
+    <string name="arduino_reset">Arduino Reset</string>
+    <string name="esp32_boot_reset">ESP32 Boot-Reset</string>
+    <string name="decline_all_caps">DECLINE</string>
+    <string name="agree_all_caps">AGREE</string>
+    <string name="ok">OK</string>
+    <string name="not_set">Not set</string>
+    <string name="theme">Theme</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="same_as_system">Same as system</string>
+    <string name="log_session_data_to_file">Log session data to file</string>
+    <string name="also_log_outgoing_data">Also log outgoing data</string>
+    <string name="mark_logged_outgoing_data">Mark logged outgoing data</string>
+    <string name="max_bytes_to_retain_for_back_scroll">Max bytes to retain (for back-scroll)</string>
+    <string name="max_bytes_to_retain">Max bytes to retain</string>
+    <string name="default_sharing_email_addresses">Default sharing email address(s)</string>
+    <string name="email_address">Email address</string>
+    <string name="baud_rate">Baud rate</string>
+    <string name="data_bits">Data bits</string>
+    <string name="stop_bits">Stop bits</string>
+    <string name="parity">Parity</string>
+    <string name="set_dtr_on_connect">Set DTR on connect</string>
+    <string name="set_rts_on_connect">Set RTS on connect</string>
+    <string name="general">General</string>
+    <string name="terminal">Terminal</string>
+    <string name="serial">Serial</string>
+    <string name="kb_input_mode">Keyboard input mode</string>
+    <string name="auto">Auto</string>
+    <string name="complete_line">Complete line</string>
+    <string name="enter_key_sends_line">Enter-key sends line</string>
+    <string name="font_size">Font size</string>
+    <string name="enter_key_sends">Enter-key sends</string>
+    <string name="cr">CR</string>
+    <string name="lf">LF</string>
+    <string name="cr_lf">CR+LF</string>
+    <string name="work_also_in_the_background">Work also in the background</string>
+    <string name="work_also_in_the_background_explanation">
+        Selecting this option enables UsbTerminal to continue receiving data from the
+        USB device even when the app is in the background. This allows you to switch
+        to other apps while keeping the serial communication going.
+    </string>
+    <string name="local_echo">Local echo (loop back)</string>
+    <string name="sound_on">Beep when Bell char received</string>
+    <string name="fg_service_notification_title">USB communication is active in the background</string>
+    <string name="open_app_all_caps">OPEN APP</string>
+    <string name="stop_all_caps">STOP</string>
+
+    <string name="no_log_file">No log files</string>
+    <string name="log_files_sharing_subject_line">UsbTerminal log files</string>
+    <string name="log_files_sharing_chooser_title">UsbTerminal log files</string>
+
+
+    <string name="vid">VID: %1$d (0x%2$x)</string>
+    <string name="pid">PID: %1$d (0x%2$x)</string>
+    <string name="portNumber">Port#: %1$d</string>
+    <string name="statusConnected">Status: Connected</string>
+    <string name="statusDisconnected">Status: Disconnected</string>
+    <string name="deviceType">Device Type: %1$s</string>
+    <string name="no_usb_devices">No USB Devices</string>
+
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="set_type_and_connect">Set type and connect</string>
+    <string name="delete">Delete</string>
+    <string name="share">Share</string>
+    <string name="refresh">Refresh</string>
+    <string name="toggle_sort_order">Toggle sort order</string>
+    <string name="size">Size: %1$d</string>
+    <string name="delete_files">Delete files</string>
+    <string name="delete_files_warning">This will permanently delete the %1$d selected files!</string>
+    <string name="delete_files_are_you_sure">Are you sure?</string>
+
+
+
+    <!-- In coordination with SettingsRepository.kt -->
+    <string-array name="data_bits">
+        <item>8</item>
+        <item>7</item>
+        <item>6</item>
+    </string-array>
+
+    <!-- In coordination with SettingsRepository.kt -->
+    <string-array name="stop_bits">
+        <item>1</item>
+        <item>1.5</item>
+        <item>2</item>
+    </string-array>
+
+    <!-- In coordination with SettingsRepository.kt -->
+    <string-array name="parity">
+        <item>None</item>
+        <item>Odd</item>
+        <item>Even</item>
+        <item>Mark</item>
+        <item>Space</item>
+    </string-array>
+
+    <!-- In coordination with SettingsRepository.FontSize.values -->
+    <string-array name="font_size">
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>14</item>
+        <item>16</item>
+        <item>18</item>
+        <item>20</item>
+        <item>22</item>
+        <item>24</item>
+        <item>28</item>
+    </string-array>
+
+</resources>

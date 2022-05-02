@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.liorhass.android.usbterminal.free">
+
+    <uses-feature android:name="android.hardware.usb.host" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+
+    <application
+        android:name="com.liorhass.android.usbterminal.free.UsbTerminalApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.UsbTerminal"
+        >
+        <activity
+            android:name="com.liorhass.android.usbterminal.free.main.MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.UsbTerminal"
+            android:windowSoftInputMode="adjustResize"
+            android:alwaysRetainTaskState="true"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
+            </intent-filter>
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/device_filter" />
+        </activity>
+
+        <service
+            android:name="com.liorhass.android.usbterminal.free.usbcommservice.UsbCommService"
+            android:description="@string/usb_communication_service_description">
+        </service>
+
+        <!-- FileProvider for sharing log-files  -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.liorhass.android.usbterminal.free.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+    </application>
+
+</manifest>

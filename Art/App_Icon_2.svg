@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="108"
+   height="108"
+   viewBox="0 0 28.574999 28.575001"
+   version="1.1"
+   id="svg884"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="App_Icon_2.svg"
+   inkscape:export-filename="C:\src\UsbTerminal2\Art\fg1.png"
+   inkscape:export-xdpi="455.11111"
+   inkscape:export-ydpi="455.11111"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview886"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="px"
+     showgrid="true"
+     units="px"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="-16.617009"
+     inkscape:cy="-10.253048"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     inkscape:snap-bbox="true"
+     inkscape:bbox-paths="false"
+     inkscape:bbox-nodes="true"
+     showguides="false"
+     inkscape:guide-bbox="true"
+     inkscape:snap-global="true"
+     inkscape:snap-grids="false">
+    <inkscape:grid
+       type="xygrid"
+       id="grid1549"
+       spacingx="0.52916667"
+       spacingy="0.52916667"
+       empspacing="5" />
+    <sodipodi:guide
+       position="9.022826,11.227889"
+       orientation="-0.70710678,-0.70710678"
+       id="guide917" />
+    <sodipodi:guide
+       position="19.715592,19.047933"
+       orientation="-0.70710678,-0.70710678"
+       id="guide919" />
+    <sodipodi:guide
+       position="10.736296,8.9710287"
+       orientation="-0.70710678,-0.70710678"
+       id="guide921" />
+  </sodipodi:namedview>
+  <defs
+     id="defs881">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient1001">
+      <stop
+         style="stop-color:#000000;stop-opacity:1"
+         offset="0"
+         id="stop997" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0"
+         offset="1"
+         id="stop999" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient1465">
+      <stop
+         style="stop-color:#004d40;stop-opacity:0"
+         offset="0"
+         id="stop1461" />
+      <stop
+         style="stop-color:#004d40;stop-opacity:1"
+         offset="1"
+         id="stop1463" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1465"
+       id="linearGradient1467"
+       x1="-9.9029179"
+       y1="-7.9174328"
+       x2="17.4778"
+       y2="14.157678"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.7471323,0,0,2.167044,-6.7142159,-6.8794534)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient1001"
+       id="linearGradient1003"
+       x1="7.0384512"
+       y1="8.0473127"
+       x2="24.192343"
+       y2="25.471399"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     inkscape:label="Background"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <rect
+       style="display:inline;opacity:1;fill:url(#linearGradient1467);fill-opacity:1;stroke:none;stroke-width:0.264583;stroke-linecap:round;stop-color:#000000"
+       id="rect1437"
+       width="28.575001"
+       height="28.574999"
+       x="0.0093138898"
+       y="-0.011642351"
+       inkscape:export-filename="C:\src\UsbTerminal2\Art\bg1.png"
+       inkscape:export-xdpi="455.11111"
+       inkscape:export-ydpi="455.11111" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Foreground"
+     style="display:none">
+    <circle
+       style="display:none;opacity:1;fill:#ff0000;fill-opacity:0;stroke:#4d0900;stroke-width:0.0529167;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;stop-color:#000000"
+       id="path9792"
+       cx="14.2875"
+       cy="14.2875"
+       r="8.7312498"
+       inkscape:label="safe zone" />
+    <path
+       style="font-variation-settings:normal;opacity:0.2;vector-effect:none;fill:url(#linearGradient1003);fill-opacity:1;stroke:none;stroke-width:0.799999;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;-inkscape-stroke:none;stop-color:#000000;stop-opacity:1"
+       d="M 19.600353,9.4118286 16.954217,16.1858 9.022826,17.347111 10.804951,19.129236 10.554166,19.420831 24.00887,32.876545 34.42994,24.241414 Z"
+       id="path956"
+       inkscape:label="Shadow"
+       sodipodi:nodetypes="cccccccc" />
+    <path
+       id="rect10000"
+       style="display:inline;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.0529166;stroke-linecap:round;stop-color:#000000"
+       d="m 9.6208331,9.1541691 c -0.5170668,0 -0.9333332,0.4162662 -0.9333332,0.9333349 v 6.533327 c 0,0.517075 0.4162664,0.933338 0.9333332,0.933338 H 12.8875 v 0.933337 h -2.333334 v 0.933325 h 7.466671 V 18.487506 H 15.6875 v -0.933337 h 3.266662 c 0.517073,0 0.933338,-0.416263 0.933338,-0.933338 v -6.533327 c 0,-0.5170687 -0.416265,-0.9333349 -0.933338,-0.9333349 z m 0.6612629,1.3999999 h 7.077477 c 0.107784,0 0.194589,0.08676 0.194589,0.194597 v 0.544138 c 0,0.107798 -0.08681,0.194603 -0.194589,0.194603 h -7.077477 c -0.107791,0 -0.194596,-0.08681 -0.194596,-0.194603 v -0.544138 c 0,-0.107792 0.08681,-0.194597 0.194596,-0.194597 z m 0.006,1.866662 h 5.66562 c 0.111004,0 0.200517,0.0895 0.200517,0.200526 v 0.532286 c 0,0.111012 -0.0895,0.200526 -0.200517,0.200526 h -5.665652 c -0.11101,0 -0.200521,-0.0895 -0.200521,-0.200526 v -0.532286 c 0,-0.111011 0.08952,-0.200526 0.200521,-0.200526 z m -0.01185,1.866676 h 5.222647 c 0.104581,0 0.188677,0.08411 0.188677,0.188666 v 0.555992 c 0,0.10457 -0.08411,0.188666 -0.188677,0.188666 h -5.222679 c -0.104574,0 -0.188672,-0.08411 -0.188672,-0.188666 v -0.555992 c 0,-0.10457 0.0841,-0.188666 0.188672,-0.188666 z"
+       inkscape:label="Terminal" />
+  </g>
+</svg>

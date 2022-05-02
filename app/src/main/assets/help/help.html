@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type"><title>Help</title>
+    <style type="text/css">
+        .center {display: block; margin-left: auto; margin-right: auto; text-align: center;}
+        .small {font-size: 70%;}
+        a:link {color: rgb(80, 120, 250);}
+        a:visited {color: rgb(180, 120, 250);}
+        ul, ol {padding-left: 20px;}
+        ul.toc li {list-style-type: none;}
+        span.nobr { white-space: nowrap; }
+        span.code { font-family: Courier New,Courier,monospace; }
+    </style>
+</head>
+<body style="font-family: Helvetica,Arial,sans-serif; font-size: 1.2em; color: rgb(216, 216, 216); background-color: rgb(0, 40, 26);">
+
+<section id=top style="margin-bottom:30px;">
+<h3>Help topics</h3>
+    <ul class="toc">
+        <li><a href="/assets/help/help.html#kb_input_mode">Keyboard Input Mode</a></li>
+        <li><a href="/assets/help/help.html#control_panel">Control Keys Panel</a>
+            <ul class="toc">
+                <li><a href="/assets/help/help.html#sending_control_chars">Sending Control Characters</a></li>
+                <li><a href="/assets/help/help.html#arrow_keys">Arrow Keys</a></li>
+            </ul>
+        </li>
+        <li><a href="/assets/help/help.html#dtr_and_cts">Controlling DTR and CTS</a></li>
+        <li><a href="/assets/help/help.html#status_line">Status Line</a></li>
+        <li><a href="/assets/help/help.html#text_hex">Text/Hex display</a></li>
+        <li><a href="/assets/help/help.html#logging">Session Logging</a>
+            <ul class="toc">
+                <li><a href="/assets/help/help.html#email_addresses">Default Sharing Email Addresses</a></li>
+            </ul>
+        </li>
+        <li><a href="/assets/help/help.html#bg">Background Operation</a></li>
+    </ul>
+</section>
+
+<section id="kb_input_mode">
+    <h3>Keyboard Input Modes&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h3>
+    Keyboard input is done using one of the two possible input modes:<br>
+    <ol>
+        <li>Auto (this is the recommended&nbsp;mode)</li>
+        <li>Complete line</li>
+    </ol>
+    <!--2brm Dedicated input field with a dedicated "Send" button-->
+    Selecting the input mode is done in the <i>Settings/Terminal</i>
+    screen with the "Keyboard input mode" selector.<br>
+    When using the app with the "<i>Auto</i>" input mode, simply tap the
+    main screen to bring up the keyboard.
+    In this mode every character is sent to the serial device as
+    it is typed on the keyboard just like on a "real" terminal.<br>
+    When using the app with "<i>Complete line</i>" mode, a text
+    input field appears near the screen bottom. text that is typed
+    in this input field is sent to the serial device when the "Send"
+    button is pressed. It is also possible to set the application
+    to send the text when the Enter key is pressed.
+    The main advantage of using the
+    app with dedicated input field is that you can edit the text locally,
+    and send it to the serial device only when you are sure it is correct.
+    It also enables use of input methods that are not generating single key
+    events such as swipe keyboards.<br>
+    Obviously using the "<i>Complete line</i>" mode is substantially
+    different than using a "real" terminal. Also, when using
+    the "<i>Complete line</i>" mode, it is not possible to send
+    control-characters.
+</section>
+
+<section id="control_panel">
+    <h3>Control Keys Panel&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h3>
+    It is possible to send
+    control characters (e.g. Ctrl-C) and arrows escape-sequences.<br>
+    This is done from the "Control Panel". To access the Control
+    Panel, click the "<i>Controls</i>" button <img src="btn_controls.png" alt="Controls button" style="width:24px;height:24px;vertical-align:middle;">
+    in the top bar.
+    In order to hide the Control
+    Panel, simply press the "<i>Controls</i>" button again.<br>
+
+    <section id="sending_control_chars">
+        <h4>Sending Control Characters&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h4>
+        When using the keyboard in "<i>Auto</i>" mode it is possible
+        to send control-characters (e.g. Ctrl-C).
+        Sending a control character is done by pressing the "Ctrl" button
+        in the <i>Control Keys Panel</i> and
+        then the specific character. For example, to send Ctrl-D, press the
+        Ctrl button and then&nbsp;'D' or 'd' on the keyboard. When the Ctrl button
+        is pressed, it is marked with a red "LED" indicator.
+        After the control character is sent, this "LED" is turned off. If
+        you want to send another control character, repeat this process.
+    </section>
+    <section id="arrow_keys">
+        <h4>Arrow Keys&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h4>
+        The <i>Control Keys Panel</i> has four arrow-keys. Pressing
+        each one of these keys sends the appropriate escape-sequence.
+    </section>
+</section>
+
+<section id="dtr_and_cts">
+    <h3>Controlling DTR and CTS&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h3>
+    To set or reset the state of the serial port's DTR and CTS lines,
+    Select the appropriate action from the drop-down menu. To open
+    the drop-down menu press the three-dots icon on the right of
+    the top-bar.
+</section>
+
+<section id="status_line">
+    <h3>Status Line&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h3>
+    At
+    the bottom of the display, below the main screen, the app displays a
+    status line. On the left side there's an "LED" indicating whether a USB
+    device is currently connected (green LED) or not (gray LED) or
+    some communication error occurred (red LED).<br>
+    The rest of the status line displays the current status or error
+    messages.<br>
+</section>
+
+<section id="text_hex">
+    <h3>Text/Hex display&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h3>
+    Data can be displayed in two ways:
+    <ul>
+        <li>Text - This is the "normal" way. In this mode the app behaves
+        like a typical terminal</li>
+        <li>Hex - In this mode data is displayed as a hex-dump.</li>
+    </ul>
+    It is possible to switch between these modes by clicking on the
+    <img src="btn_text_hex.png" alt="Text hex button" style="width:24px;height:24px;vertical-align:middle;">
+    button. When switching mode, you don't loose the buffered data, so you
+    can freely switch back and forth between these two modes.
+</section>
+
+<section id="logging">
+    <h3>Session Logging&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h3>
+    <i>Session Logging</i> can be enabled in the <i>Settings/General</i> screen.<br>
+    If Session Logging is enabled, the app creates a log file every
+    time it is started (or when Session Logging is enabled after it
+    was disabled).<br>
+    The log file contains a simple dump of every byte that was received
+    without any formatting. I.e. it may contain non-printable characters.<br>
+    When Session Logging is enabled, you can choose to also log outgoing data.
+    Outgoing data can be simply logged together with the incoming data, or
+    it can be marked with a special mark. If you choose to mark outgoing data,
+    it is wrapped with "OUT{" and "}". E.g. the log file may contain
+    <span class="nobr code">OUT{some output text}</span>.<br>
+    Log files can be accessed by clicking "Log Files" in the navigation drawer.<br>
+    Currently UsbTerminal cannot display the content of log files by itself.
+    In order to view the content of log files, select the files you want to view,
+    and use the <i>Share</i> button to send them (e.g. you can email them using
+    your standard email app).<br>
+    The log files are sorted by creation time. The sorting order can be
+    reversed by clicking the <img src="btn_sorting_order.png" alt="Sorting order button" style="width:12px;height:24px;vertical-align:middle;">
+    button in the top bar.
+    <section id="email_addresses">
+        <h4>Default Sharing Email Addresses&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h4>
+        It is possible to set a Default Sharing Email Address(es) in <i>Settings/General</i>.
+        This is a list of comma-separated email addresses. When you share log files
+        by emailing them, these email addresses are automatically set as the recipient
+        address. This can save the need to re-type email addresses if you tend to
+        send log files to the same recipients (e.g. if you tend to send log files
+        to yourself, put your email address in this field).
+    </section>
+</section>
+
+<section id="bg">
+    <h3>Background Operation&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h3>
+    Background Operation can be enabled by selecting "Work also in the background"
+    in <i>Settings/Terminal</i>. When this mode is selected, the app will continue
+    to communicate with the USB device even if the user switches to another app.
+    Any data received during background operation is stored in the app's buffer,
+    and will be displayed when the user returns to the app. This data is also
+    logged if logging is enabled.<br>
+    When the app is working in the background, a small terminal icon appears in
+    the device' notification bar. Pulling-down the notifications shade
+    provides access to the app's notification section. This looks like this:
+    <img src="notification.png" alt="Notification" style="display:block;width:100%;margin-top:20px;margin-bottom:20px;">
+    Clicking on "OPEN APP" opens the UsbTerminal app. Clicking on "STOP" stops
+    the background operation and disconnect from the USB device.
+</section>
+
+</body></html>

@@ -1,0 +1,136 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "com.liorhass.android.usbterminal.free"
+        versionCode 200
+        versionName "2.0.1"
+        minSdkVersion 25
+        targetSdkVersion 31
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+
+        // Set the generated APK file name.  https://stackoverflow.com/a/28992851/1071117
+        setProperty("archivesBaseName", "UsbTerminal_${versionName}_${versionCode}")
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // For showing compile time in the app. From: https://stackoverflow.com/a/26372474/1071117
+        buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
+    }
+    signingConfigs {
+        // To see content of keystore: In terminal: "/Program Files/Android/Android Studio/jre/bin/keytool.exe" -list -v -keystore "/users/lior/documents/etc/android_keystore.ks"
+        release {
+            // From: https://stackoverflow.com/a/48420237/1071117 and https://stackoverflow.com/a/33218300/1071117
+            Properties props = new Properties()
+            def propFile = new File('keystore.properties')
+            if (propFile.canRead()) {
+                props.load(new FileInputStream(propFile))
+
+                if (props != null && props.containsKey('STORE_FILE') && props.containsKey('STORE_PASSWORD') &&
+                        props.containsKey('KEY_ALIAS') && props.containsKey('KEY_PASSWORD')) {
+                    android.signingConfigs.release.storeFile = file(props['STORE_FILE'])
+                    android.signingConfigs.release.storePassword = props['STORE_PASSWORD']
+                    android.signingConfigs.release.keyAlias = props['KEY_ALIAS']
+                    android.signingConfigs.release.keyPassword = props['KEY_PASSWORD']
+                } else {
+                    println 'keystore.properties found but some entries are missing'
+                    android.buildTypes.release.signingConfig = null
+                }
+            } else {
+                println 'Cannot find keystore.properties file'
+            }
+
+//            storeFile file('/../../../xxx/xxx/xxx/keystore_file.keystore')
+//            keyAlias 'xxx'
+//            storePassword ''
+//            keyPassword ''
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            zipAlignEnabled true
+            debuggable true
+            // In order to sign the debug version with the release key, uncomment this line and populate the signingConfigs fields above. See https://stackoverflow.com/a/42118021/1071117
+            // signingConfig signingConfigs.release
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        jvmTarget = '1.8'
+//        useIR = true
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+//        kotlinCompilerVersion '1.5.31'
+        kotlinCompilerExtensionVersion compose_version
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+}
+
+dependencies {
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.5.0'
+    // Find latest version at: https://mvnrepository.com/artifact/androidx.compose.ui/ui?repo=google
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
+    implementation 'androidx.activity:activity-compose:1.4.0'
+    implementation 'androidx.webkit:webkit:1.4.0'
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    implementation "androidx.navigation:navigation-compose:2.4.2"
+
+    implementation("androidx.datastore:datastore:1.0.0")
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+
+    // For Jetpack Compose Permissions  https://google.github.io/accompanist/permissions/
+    // implementation "com.google.accompanist:accompanist-permissions:0.24.1-alpha"
+
+    // For latest versions see: https://search.maven.org/search?q=g:com.google.accompanist
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.24.4-alpha"
+    implementation "com.google.accompanist:accompanist-webview:0.24.4-alpha"
+
+    // For Tabs in settings screens
+    implementation "com.google.accompanist:accompanist-pager:0.24.4-alpha"
+    implementation "com.google.accompanist:accompanist-pager-indicators:0.24.4-alpha"
+
+    // Logging. Latest version here: https://mvnrepository.com/artifact/com.jakewharton.timber/timber
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+
+    implementation 'com.github.mik3y:usb-serial-for-android:3.4.4'
+
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation "com.google.truth:truth:1.1"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+}
