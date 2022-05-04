@@ -38,6 +38,7 @@ fun usbCommServiceDebug(
 //            }
 //
 
+        @Suppress("CascadeIf")
         if (param == '1') {
 //                val ba = "0123456789abcdefghij".toByteArray()
 //                val b = byteArrayOf(ba[dbgIndex++ % ba.size])

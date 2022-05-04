@@ -62,7 +62,6 @@ class LogFile private constructor(
     }
 
     private var fileName: String = generateFileName() // Each log file has a name like this: UsbTerminal_20220223_103842.log
-        private set
     private val logFilesDir = getLogFilesDir(context)
     init { if (logFilesDir == null) throw Exception("Cannot create log-files directory") }
     private var file: File = File(logFilesDir, fileName)

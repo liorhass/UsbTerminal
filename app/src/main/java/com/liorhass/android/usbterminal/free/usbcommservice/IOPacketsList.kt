@@ -265,7 +265,7 @@ class IOPacketsList(private val maxPacketSize: Int = MAX_PACKET_SIZE,
     private class IOPacket(
         len: Int,
         val direction: DataDirection,
-        val serialNumber: Int,
+        @Suppress("unused") val serialNumber: Int,
         val timeStamp: Long,
     ) {
         val data: ByteArray

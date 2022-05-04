@@ -106,11 +106,11 @@ class SettingsRepository private constructor(private val context: Context) {
         const val setRTSTrueOnConnect = true
 
         // Internal (not from settings screens)
-        val isDefaultValues = true // A hack to be able to know when values are only defaults, or actually from disk. This is always set to false in the mapping from Preferences to SettingsData
-        val showedEulaV1 = false // If this is true it means that we have upgraded from UsbTerminal-v1.x
-        val showedV2WelcomeMsg = false
+        const val isDefaultValues = true // A hack to be able to know when values are only defaults, or actually from disk. This is always set to false in the mapping from Preferences to SettingsData
+        const val showedEulaV1 = false // If this is true it means that we have upgraded from UsbTerminal-v1.x
+        const val showedV2WelcomeMsg = false
         val displayType = DisplayType.TEXT // Text or Hex
-        val showCtrlButtonsRow = false
+        const val showCtrlButtonsRow = false
         const val logFilesListSortingOrder = LogFilesListSortingOrder.ASCENDING
     }
     object SettingsKeys {
@@ -180,6 +180,7 @@ class SettingsRepository private constructor(private val context: Context) {
         )
 
     object ThemeType {
+        @Suppress("unused")
         const val LIGHT     = 0
         const val DARK      = 1
         const val AS_SYSTEM = 2

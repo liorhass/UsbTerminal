@@ -39,6 +39,7 @@ public class HexDump {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
     };
 
+    @SuppressWarnings("unused")
     public static String dumpHexString(byte[] array) {
         return dumpHexString(array, 0, array.length);
     }
@@ -85,6 +86,7 @@ public class HexDump {
         return result.toString();
     }
 
+    @SuppressWarnings("unused")
     public static String toHexString(byte b) {
         return toHexString(toByteArray(b));
     }
@@ -106,10 +108,12 @@ public class HexDump {
         return new String(buf);
     }
 
+    @SuppressWarnings("unused")
     public static String toHexString(int i) {
         return toHexString(toByteArray(i));
     }
 
+    @SuppressWarnings("unused")
     public static String toHexString(short i) {
         return toHexString(toByteArray(i));
     }
@@ -151,6 +155,7 @@ public class HexDump {
         throw new InvalidParameterException("Invalid hex char '" + c + "'");
     }
 
+    @SuppressWarnings("unused")
     public static byte[] hexStringToByteArray(String hexString) {
         int length = hexString.length();
         byte[] buffer = new byte[length / 2];

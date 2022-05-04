@@ -125,13 +125,16 @@ object UsbPermissionRequester {
         portNumber = requestParams.portNumber
         deviceType = requestParams.usbDeviceType
 
-        val usbPermissionIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.getBroadcast(
-                activity,0, Intent(INTENT_ACTION_USB_PERMISSION), PendingIntent.FLAG_MUTABLE)
-        } else {
-            PendingIntent.getBroadcast(
-                activity,0, Intent(INTENT_ACTION_USB_PERMISSION), 0)
-        }
+        @SuppressLint("InlinedApi")
+        val usbPermissionIntent = PendingIntent.getBroadcast(
+            activity,0, Intent(INTENT_ACTION_USB_PERMISSION), PendingIntent.FLAG_MUTABLE)
+        // val usbPermissionIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        //     PendingIntent.getBroadcast(
+        //         activity,0, Intent(INTENT_ACTION_USB_PERMISSION), PendingIntent.FLAG_MUTABLE)
+        // } else {
+        //     PendingIntent.getBroadcast(
+        //         activity,0, Intent(INTENT_ACTION_USB_PERMISSION), 0)
+        // }
         requestParams.usbDevice?.let { usbDevice ->
             Timber.d("Calling UsbManager.requestPermission() for device: ${usbDevice.deviceName}")
             (activity?.getSystemService(Context.USB_SERVICE) as UsbManager)

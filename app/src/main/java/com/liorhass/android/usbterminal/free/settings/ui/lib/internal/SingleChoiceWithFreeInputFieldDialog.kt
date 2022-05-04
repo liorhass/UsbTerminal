@@ -162,7 +162,7 @@ fun RadioButtonGroupWithFreeInputFieldPreview() {
     val labels = listOf("Label 1","Label 2", "Label 3")
     RadioButtonGroupWithFreeInputField(
         labels,
-        freeInputFieldValue = "FFRREEEE",
+        freeInputFieldValue = "FREE",
         selectedIndex = 1,
         onFreeFieldChange = {},
         onSelection = {},

@@ -23,16 +23,16 @@
         </item>
         <item>
             UsbTerminal is a free and open-source app. Its source code is available
-            at GitHub at https://www.github.com/liorhass.
+            at GitHub at https://www.github.com/liorhass/UsbTerminal.
         </item>
         <item>
             To learn about UsbTerminal\'s features and usage please go to the help screen.
         </item>
         <item>
-            UsbTerminal is a hobby project of one person. As such, it doesn\'t go through rigorous
+            UsbTerminal is a hobby project of one person. As such, it does not go through rigorous
             quality-assurance (QA) process. Take that into consideration. If you do
             use the app and find bugs, or if you have improvement suggestions, please
-            let me know at GitHub or drop me an email at lior.apps@gmail.com.
+            let me know at GitHub, or drop me an email at lior.apps@gmail.com.
         </item>
     </string-array>
     <string name="privacy">Privacy</string>
@@ -67,7 +67,7 @@
     <string name="about_screen_title">About</string>
     <string name="help_screen_title">Help</string>
     <string name="log_files_screen_top_appbar_normal_title">Log Files</string>
-    <string name="log_files_screen_top_appbar_cab_title">%1$d selected</string>
+    <string name="log_files_screen_top_appbar_cab_title" tools:ignore="PluralsCandidate">%1$d selected</string>
 
     <string name="usb_comm_service_notification_channel_name">USB Comm Service</string>
 
@@ -163,7 +163,7 @@
     <string name="toggle_sort_order">Toggle sort order</string>
     <string name="size">Size: %1$d</string>
     <string name="delete_files">Delete files</string>
-    <string name="delete_files_warning">This will permanently delete the %1$d selected files!</string>
+    <string name="delete_files_warning" tools:ignore="PluralsCandidate">This will permanently delete the %1$d selected files!</string>
     <string name="delete_files_are_you_sure">Are you sure?</string>
 
 

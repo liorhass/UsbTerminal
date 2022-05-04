@@ -39,7 +39,7 @@ fun UpgradeFromV1MsgDialog(
     ) {
         Card(
             elevation = 8.dp,
-            shape = RoundedCornerShape(8.dp),
+            backgroundColor = MaterialTheme.colors.primary,
             modifier = Modifier.width(LocalConfiguration.current.screenWidthDp.dp),
         ) {
             Column(
@@ -72,7 +72,10 @@ fun UpgradeFromV1MsgDialog(
                     TextButton(
                         onClick = onOk,
                     ) {
-                        Text(text = stringResource(R.string.ok))
+                        Text(
+                            text = stringResource(R.string.ok),
+                            color = MaterialTheme.colors.onPrimary,
+                        )
                     }
                 }
             }

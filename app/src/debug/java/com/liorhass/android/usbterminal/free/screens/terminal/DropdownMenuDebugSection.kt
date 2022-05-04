@@ -35,4 +35,24 @@ fun ColumnScope.DropdownMenuDebugSection(
                 .clickable { mainViewModel.debug2(); showOverflowMenu.value = false }
         )
     }
+    DropdownMenuItem(onClick = {
+        showOverflowMenu.value = false
+    }
+    ) {
+        Text(
+            text = "Debug welcome msg",
+            modifier = Modifier
+                .clickable { mainViewModel.debugWelcomeMsg(); showOverflowMenu.value = false }
+        )
+    }
+    DropdownMenuItem(onClick = {
+        showOverflowMenu.value = false
+    }
+    ) {
+        Text(
+            text = "Debug upgrade msg",
+            modifier = Modifier
+                .clickable { mainViewModel.debugUpgradeMsg(); showOverflowMenu.value = false }
+        )
+    }
 }

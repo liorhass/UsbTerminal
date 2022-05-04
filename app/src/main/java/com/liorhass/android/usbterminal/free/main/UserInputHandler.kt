@@ -147,6 +147,7 @@ class UserInputHandler(
     }
 
     private fun processSendBuf(buf: ByteArray): ByteArray {
+        @Suppress("CascadeIf")
         if (bytesSentByEnterKey == SettingsRepository.BytesSentByEnterKey.CR_LF) {
 //            Timber.d("processSendBuf() INPUT vvvvvvvvvvvvv")
 //            Timber.d(HexDump.dumpHexString(buf))

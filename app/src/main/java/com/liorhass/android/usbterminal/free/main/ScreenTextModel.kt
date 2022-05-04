@@ -23,11 +23,11 @@
 *    Effect: if n is 1, clear from beginning of line to cursor
 *    Effect: if n is 2, clear entire line
 *
-* CUF (CUrsor Forward)
+* CUF (Cursor Forward)
 *    Sequence: ESC [ n C
 *    Effect: moves cursor forward n chars
 *
-* CUB (CUrsor Backward)
+* CUB (Cursor Backward)
 *    Sequence: ESC [ n D
 *    Effect: moves cursor backward n chars
 *
@@ -36,7 +36,7 @@
 *
 * DSR (Device Status Report)
 *    Sequence: ESC [ 6 n
-*    Effect: reports the current cusor position as ESC [ n ; m R
+*    Effect: reports the current cursor position as ESC [ n ; m R
 *            where n is the row and m is the column
 *
 * When multi line mode is enabled, we also use an additional escape
@@ -117,7 +117,6 @@ class ScreenTextModel(
     private val _screenLinesState = mutableStateOf<Array<ScreenLine>>(emptyArray())
     val screenLinesState: State<Array<ScreenLine>> = _screenLinesState
     private var totalCharCount = 0
-        private set
 
     /** Cursor position. `line` and `column` start at 1. For displaying at the status-line */
     data class DisplayedCursorPosition(val line: Int, val column: Int)
