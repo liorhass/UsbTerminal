@@ -39,3 +39,4 @@ keystore.properties
 /gradlew
 /gradlew.bat
 /settings.gradle
+/app/release

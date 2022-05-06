@@ -34,11 +34,12 @@
             </ul>
         </li>
         <li><a href="/assets/help/help.html#bg">Background Operation</a></li>
+        <li><a href="/assets/help/help.html#escape_codes">Supported control characters and escape codes</a></li>
     </ul>
 </section>
 
 <section id="kb_input_mode">
-    <h3>Keyboard Input Modes&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h3>
+    <h3>Keyboard Input Modes&nbsp;&nbsp;<a href="#top"><span class="small">top</span></a></h3>
     Keyboard input is done using one of the two possible input modes:<br>
     <ol>
         <li>Auto (this is the recommended&nbsp;mode)</li>
@@ -68,7 +69,7 @@
 </section>
 
 <section id="control_panel">
-    <h3>Control Keys Panel&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h3>
+    <h3>Control Keys Panel&nbsp;&nbsp;<a href="#top"><span class="small">top</span></a></h3>
     It is possible to send
     control characters (e.g. Ctrl-C) and arrows escape-sequences.<br>
     This is done from the "Control Panel". To access the Control
@@ -78,7 +79,7 @@
     Panel, simply press the "<i>Controls</i>" button again.<br>
 
     <section id="sending_control_chars">
-        <h4>Sending Control Characters&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h4>
+        <h4>Sending Control Characters&nbsp;&nbsp;<a href="#top"><span class="small">top</span></a></h4>
         When using the keyboard in "<i>Auto</i>" mode it is possible
         to send control-characters (e.g. Ctrl-C).
         Sending a control character is done by pressing the "Ctrl" button
@@ -90,14 +91,14 @@
         you want to send another control character, repeat this process.
     </section>
     <section id="arrow_keys">
-        <h4>Arrow Keys&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h4>
+        <h4>Arrow Keys&nbsp;&nbsp;<a href="#top"><span class="small">top</span></a></h4>
         The <i>Control Keys Panel</i> has four arrow-keys. Pressing
         each one of these keys sends the appropriate escape-sequence.
     </section>
 </section>
 
 <section id="dtr_and_cts">
-    <h3>Controlling DTR and CTS&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h3>
+    <h3>Controlling DTR and CTS&nbsp;&nbsp;<a href="#top"><span class="small">top</span></a></h3>
     To set or reset the state of the serial port's DTR and CTS lines,
     Select the appropriate action from the drop-down menu. To open
     the drop-down menu press the three-dots icon on the right of
@@ -105,7 +106,7 @@
 </section>
 
 <section id="status_line">
-    <h3>Status Line&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h3>
+    <h3>Status Line&nbsp;&nbsp;<a href="#top"><span class="small">top</span></a></h3>
     At
     the bottom of the display, below the main screen, the app displays a
     status line. On the left side there's an "LED" indicating whether a USB
@@ -116,7 +117,7 @@
 </section>
 
 <section id="text_hex">
-    <h3>Text/Hex display&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h3>
+    <h3>Text/Hex display&nbsp;&nbsp;<a href="#top"><span class="small">top</span></a></h3>
     Data can be displayed in two ways:
     <ul>
         <li>Text - This is the "normal" way. In this mode the app behaves
@@ -130,7 +131,7 @@
 </section>
 
 <section id="logging">
-    <h3>Session Logging&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h3>
+    <h3>Session Logging&nbsp;&nbsp;<a href="#top"><span class="small">top</span></a></h3>
     <i>Session Logging</i> can be enabled in the <i>Settings/General</i> screen.<br>
     If Session Logging is enabled, the app creates a log file every
     time it is started (or when Session Logging is enabled after it
@@ -151,7 +152,7 @@
     reversed by clicking the <img src="btn_sorting_order.png" alt="Sorting order button" style="width:12px;height:24px;vertical-align:middle;">
     button in the top bar.
     <section id="email_addresses">
-        <h4>Default Sharing Email Addresses&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h4>
+        <h4>Default Sharing Email Addresses&nbsp;&nbsp;<a href="#top"><span class="small">top</span></a></h4>
         It is possible to set a Default Sharing Email Address(es) in <i>Settings/General</i>.
         This is a list of comma-separated email addresses. When you share log files
         by emailing them, these email addresses are automatically set as the recipient
@@ -162,7 +163,7 @@
 </section>
 
 <section id="bg">
-    <h3>Background Operation&nbsp;&nbsp;<a href="/assets/help/help.html#top"><span class="small">top</span></a></h3>
+    <h3>Background Operation&nbsp;&nbsp;<a href="#top"><span class="small">top</span></a></h3>
     Background Operation can be enabled by selecting "Work also in the background"
     in <i>Settings/Terminal</i>. When this mode is selected, the app will continue
     to communicate with the USB device even if the user switches to another app.
@@ -177,4 +178,42 @@
     the background operation and disconnect from the USB device.
 </section>
 
+<section id="escape_codes">
+    <h3>Supported control characters and escape codes&nbsp;&nbsp;<a href="#top"><span class="small">top</span></a></h3>
+    <ul>
+        <li><span class="code"> \n</span> - New line. Cursor moved one line down and to start of line
+        <li><span class="code"> \r</span> - Carriage return. Cursor move to start of current line
+        <li><span class="code"> \b</span> - Backspace. Cursor moved left one place unless it’s at the line’s beginning
+        <li><span class="code"> \t</span> - Tab - Move cursor forward to next tab-stop (tab stops are 8 characters apart)
+        <li><span class="code"> \007</span> - ^G Bell. make a beep sound
+        <li><span class="code"> Esc [ Pn A</span> - Cursor Up. Pn is number of lines to move. It is considered 1 if it's missing, 0 or 1
+        <li><span class="code"> Esc [ Pn B</span> - Cursor Down. Pn is number of lines to move. It is considered 1 if it's missing, 0 or 1
+        <li><span class="code"> Esc [ Pn C</span> - Cursor Forward. Pn is number of characters to move. It is considered 1 if it's missing, 0 or 1
+        <li><span class="code"> Esc [ Pn D</span> - Cursor Backward. Pn is number of characters to move. It is considered 1 if it's missing, 0 or 1
+        <li><span class="code"> Esc [ Ps K</span> -<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Ps 0 or missing - Erase from cursor to EOL<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Ps 1 - Erase from beginning of line to cursor<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Ps 2 - Erase line containing cursor<br>
+        <li><span class="code"> Esc [ Ps J</span> -<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Ps 0 or missing - Erase from cursor to end of screen<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Ps 2 - Erase entire screen
+        <li><span class="code"> Esc [ H</span> - Cursor to Home Position.
+        <li><span class="code"> Esc H</span> - Cursor to Home Position. (Same as Esc[H)
+        <li><span class="code"> Esc [ Pn ; Pn H</span> - Cursor Position. First parameter is line number and
+    the second is column
+        <li><span class="code"> Esc [ Ps n</span> - DSR (Device Status Report)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Ps 6 - Terminal reports the current cursor position as
+        <span class="code">ESC [ n ; m R</span>  where n is the row and m is the column<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Ps 5 - Terminal sends “OK” status report as <span class="code">Esc [ 0 n</span>
+        <li><span class="code"> Esc [ ps ; ps ; ps... m</span> - Select Graphic Rendition<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Ps 0 - Clear all graphic renditions<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;Ps 30..37 and 90..97 - Set text color. For mapping of code to color
+        when selecting graphic rendition see
+        <a href="https://en.wikipedia.org/wiki/ANSI_escape_code#Colors">ANSI Escape Codes Colors</a>.
+    </ul>
+</section>
+<p>
+    <br>
+    <br>
+</p>
 </body></html>

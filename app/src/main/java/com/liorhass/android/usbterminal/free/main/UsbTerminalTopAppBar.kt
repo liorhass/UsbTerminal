@@ -24,13 +24,13 @@ import androidx.compose.ui.unit.sp
 import com.liorhass.android.usbterminal.free.R
 import com.liorhass.android.usbterminal.free.ui.theme.UsbTerminalTheme
 
-enum class UT2TopAppBarNavigationIcon {
+enum class UTTopAppBarNavigationIcon {
     Menu, Back, Clear
 }
 
 @Composable
 fun UsbTerminalTopAppBar(
-    navigationIcon: UT2TopAppBarNavigationIcon,
+    navigationIcon: UTTopAppBarNavigationIcon,
     onNavigationIconClick: () -> Unit,
     title: String,
     isInContextualMode: Boolean,
@@ -53,9 +53,9 @@ fun UsbTerminalTopAppBar(
         navigationIcon = {
             IconButton(onClick = onNavigationIconClick) {
                 when (navigationIcon) {
-                    UT2TopAppBarNavigationIcon.Menu  -> Icon(Icons.Filled.Menu, stringResource(id = R.string.menu), tint = onSurfaceColor)
-                    UT2TopAppBarNavigationIcon.Back  -> Icon(Icons.Filled.ArrowBack, stringResource(id = R.string.back), tint = onSurfaceColor)
-                    UT2TopAppBarNavigationIcon.Clear -> Icon(Icons.Filled.Clear, stringResource(id = R.string.clear), tint = onSurfaceColor)
+                    UTTopAppBarNavigationIcon.Menu  -> Icon(Icons.Filled.Menu, stringResource(id = R.string.menu), tint = onSurfaceColor)
+                    UTTopAppBarNavigationIcon.Back  -> Icon(Icons.Filled.ArrowBack, stringResource(id = R.string.back), tint = onSurfaceColor)
+                    UTTopAppBarNavigationIcon.Clear -> Icon(Icons.Filled.Clear, stringResource(id = R.string.clear), tint = onSurfaceColor)
                 }
             }
         },

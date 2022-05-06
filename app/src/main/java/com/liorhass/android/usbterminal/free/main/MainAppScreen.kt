@@ -132,10 +132,10 @@ fun onTopAppBarNavigationIconClick(
 fun getTopAppBarNavigationIcon(
     currentScreenAttributes: UsbTerminalScreenAttributes,
     isTopBarInContextualMode: Boolean,
-): UT2TopAppBarNavigationIcon {
+): UTTopAppBarNavigationIcon {
     return when {
-        isTopBarInContextualMode -> UT2TopAppBarNavigationIcon.Clear
-        currentScreenAttributes.isTopInBackStack -> UT2TopAppBarNavigationIcon.Menu
-        else -> UT2TopAppBarNavigationIcon.Back
+        isTopBarInContextualMode -> UTTopAppBarNavigationIcon.Clear
+        currentScreenAttributes.isTopInBackStack -> UTTopAppBarNavigationIcon.Menu
+        else -> UTTopAppBarNavigationIcon.Back
     }
 }

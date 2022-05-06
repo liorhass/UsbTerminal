@@ -35,9 +35,9 @@ import java.util.*
 class UsbCommService : Service() {
 
     companion object {
-        const val NOTIFICATION_CHANNEL_ID_FOR_FOREGROUND_SERVICE = "UT2FSChannelId"
+        const val NOTIFICATION_CHANNEL_ID_FOR_FOREGROUND_SERVICE = "UTFSChannelId"
         const val FOREGROUND_SERVICE_NOTIFICATION_ID = 7734
-        const val STOP_SELF = "UT2StopSelf"
+        const val STOP_SELF = "UTStopSelf"
     }
 
     enum class ErrorCode {
@@ -175,6 +175,7 @@ class UsbCommService : Service() {
             .setContentTitle(getString(R.string.fg_service_notification_title))
 //            .setContentText("content text") // todo: this line should indicate the state of usbSerialPort.isConnected
             .setSmallIcon(R.drawable.ic_baseline_monitor_24)
+            .setColor(resources.getColor(R.color.teal_900, theme))
             .setPriority(PRIORITY_MIN)
             .setCategory(Notification.CATEGORY_SERVICE)
             .setOngoing(true)

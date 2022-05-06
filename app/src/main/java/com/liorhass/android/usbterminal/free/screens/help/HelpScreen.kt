@@ -80,7 +80,7 @@ fun HelpScreen(
 //
 //                }
                 UsbTerminalTopAppBar(
-                    navigationIcon = UT2TopAppBarNavigationIcon.Back,
+                    navigationIcon = UTTopAppBarNavigationIcon.Back,
                     onNavigationIconClick = { UsbTerminalNavigator.navigateBack() },
                     title = "Help",
                     isInContextualMode = false
