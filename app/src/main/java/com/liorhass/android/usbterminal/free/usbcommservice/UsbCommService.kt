@@ -148,7 +148,7 @@ class UsbCommService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        Timber.d("onDestroy()")
+        // Timber.d("onDestroy()")
         logFile?.close()
         logFile = null
         job.cancel()
@@ -157,7 +157,7 @@ class UsbCommService : Service() {
     // From https://stackoverflow.com/a/47549638/1071117
     fun becomeForegroundService() {
         if (stopping) return
-        Timber.d("becomeForeground()")
+        // Timber.d("becomeForeground()")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel()
         }
@@ -187,7 +187,7 @@ class UsbCommService : Service() {
     }
 
     fun becomeBackgroundService() {
-        Timber.d("becomeBackground()")
+        // Timber.d("becomeBackground()")
         stopForeground(STOP_FOREGROUND_REMOVE)
     }
 

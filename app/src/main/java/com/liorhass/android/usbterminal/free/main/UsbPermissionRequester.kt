@@ -73,7 +73,7 @@ object UsbPermissionRequester {
         onPermissionRequested: () -> Unit // A callback that resets the state (set shouldRequestPermission to false) to enable one-time-event
     ) {
         if (job != null) {
-            Timber.d("bindActivity(): Canceling old job")
+            // Timber.d("bindActivity(): Canceling old job")
             job?.cancel()
         }
         this.activity = activity

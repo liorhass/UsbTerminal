@@ -52,8 +52,9 @@ fun AboutScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(scrollState)
             .background(MaterialTheme.colors.primary) // todo: replace with surface https://developer.android.com/jetpack/compose/themes#content-color
+            .padding(start = 10.dp, end = 10.dp)
+            .verticalScroll(scrollState)
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             Image(
@@ -75,7 +76,7 @@ fun AboutScreen(
                 color = Color.White,
                 modifier = Modifier
                     .alignByBaseline()
-                    .padding(start = 16.dp),
+                    .padding(start = 6.dp),
                 fontSize = 24.sp
             )
             Text(
@@ -84,7 +85,7 @@ fun AboutScreen(
                 color = MaterialTheme.colors.onPrimary,
                 modifier = Modifier
                     .alignByBaseline()
-                    .padding(start = 20.dp),
+                    .padding(start = 12.dp),
                 fontSize = 18.sp
             )
         }
@@ -96,7 +97,7 @@ fun AboutScreen(
                 color = MaterialTheme.colors.onPrimary,
                 linkColor = Color(0xFF6688EE),
                 modifier = Modifier
-                    .padding(start = 16.dp, top = 8.dp),
+                    .padding(top = 8.dp),
                 fontSize = 18.sp
             )
         }
@@ -106,7 +107,7 @@ fun AboutScreen(
             fontWeight = FontWeight.Bold,
             color = Color.White,
             modifier = Modifier
-                .padding(top = 20.dp, start = 16.dp),
+                .padding(top = 20.dp),
             fontSize = 22.sp
         )
         val privacyParagraphs = stringArrayResource(R.array.privacy_text_in_about_screen)
@@ -116,7 +117,7 @@ fun AboutScreen(
                 color = MaterialTheme.colors.onPrimary,
                 linkColor = Color(0xFF6688EE),
                 modifier = Modifier
-                    .padding(start = 16.dp, top = 8.dp),
+                    .padding(top = 8.dp),
                 fontSize = 18.sp
             )
         }
@@ -126,7 +127,7 @@ fun AboutScreen(
             fontWeight = FontWeight.Bold,
             color = Color.White,
             modifier = Modifier
-                .padding(top = 20.dp, start = 16.dp),
+                .padding(top = 20.dp),
             fontSize = 22.sp
         )
         val thirdPartyParagraphs = stringArrayResource(R.array.third_party_text_in_about_screen)
@@ -136,12 +137,11 @@ fun AboutScreen(
                 color = MaterialTheme.colors.onPrimary,
                 linkColor = Color(0xFF6688EE),
                 modifier = Modifier
-                    .padding(start = 16.dp, top = 8.dp),
+                    .padding(top = 8.dp),
                 fontSize = 18.sp
             )
         }
         Spacer(modifier = Modifier.height(30.dp))
     }
 }
-
 

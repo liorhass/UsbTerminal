@@ -13,12 +13,14 @@ package com.liorhass.android.usbterminal.free.screens.terminal
 
 import android.graphics.Rect
 import android.view.ViewTreeObserver
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import com.liorhass.android.usbterminal.free.R
@@ -65,6 +67,7 @@ fun TerminalScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.Black) //todo: should be same as screen's LazyColumn background (i.e. from config in combination with text color)
     ) {
         // This focusRequesters is how a click on the text area sets focus to the
         // TextToXmitInputField, or opens the soft keyboard
@@ -102,6 +105,18 @@ fun TerminalScreen(
             mainFocusRequester,
             auxFocusRequester,
         )
+        // AnimatedVisibility(
+        //     visible = mainViewModel.ctrlButtonsRowVisible.value,
+        //     enter = slideInVertically(
+        //         animationSpec = tween(1000),
+        //         initialOffsetY = { fullHeight ->
+        //             Timber.d("fullHeight=$fullHeight")
+        //             fullHeight }
+        //     ),
+        //     exit = fadeOut(animationSpec = tween(1000))
+        // ) {
+        //     CtrlButtonsRow(mainViewModel, modifier = Modifier.clipToBounds())
+        // }
         if (mainViewModel.ctrlButtonsRowVisible.value) {
             CtrlButtonsRow(mainViewModel)
         }

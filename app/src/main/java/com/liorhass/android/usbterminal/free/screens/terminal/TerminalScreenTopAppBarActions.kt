@@ -60,7 +60,7 @@ fun TerminalScreenTopAppBarActions(mainViewModel: MainViewModel) {
     ) {
         Icon(
             modifier = Modifier.padding(start = 0.dp, end = 0.dp),
-            painter = painterResource(id = R.drawable.ic_baseline_control_camera_24),
+            painter = painterResource(id = R.drawable.ic_baseline_open_with_24),
             contentDescription = stringResource(R.string.arrows_keypad)
         )
     }

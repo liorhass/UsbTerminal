@@ -68,6 +68,10 @@ fun GeneralSettingsPage(
         // Log session data to file
         SettingsSwitch(
             title = {Text(text= stringResource(R.string.log_session_data_to_file))},
+            icon = {Icon(
+                painterResource(R.drawable.ic_baseline_history_edu_24),
+                contentDescription = stringResource(R.string.log_session_data_to_file),
+            )},
             checked = settingsData.logSessionDataToFile
         ) { checked ->
             mainViewModel.settingsRepository.setLogSessionDataToFile(checked)
@@ -78,6 +82,7 @@ fun GeneralSettingsPage(
             title = {Text(text=stringResource(R.string.also_log_outgoing_data))},
             checked = settingsData.alsoLogOutgoingData,
             enabled = settingsData.logSessionDataToFile,
+            replaceIconWithSameSpace = true,
         ) { checked ->
             mainViewModel.settingsRepository.setAlsoLogOutgoingData(checked)
         }
@@ -87,6 +92,7 @@ fun GeneralSettingsPage(
             title = {Text(text=stringResource(R.string.mark_logged_outgoing_data))},
             checked = settingsData.markLoggedOutgoingData,
             enabled = (settingsData.logSessionDataToFile && settingsData.alsoLogOutgoingData),
+            replaceIconWithSameSpace = true,
         ) { checked ->
             mainViewModel.settingsRepository.setMarkLoggedOutgoingData(checked)
         }
@@ -94,6 +100,10 @@ fun GeneralSettingsPage(
         // Max number of bytes to retain in back-scroll buffer
         SettingsFreeText(
             title = {Text(text=stringResource(R.string.max_bytes_to_retain_for_back_scroll))},
+            icon = {Icon(
+                painterResource(R.drawable.ic_baseline_format_align_justify_24),
+                contentDescription = stringResource(R.string.max_bytes_to_retain_for_back_scroll),
+            )},
             label = {Text(text=stringResource(R.string.max_bytes_to_retain))},
             previousText = settingsData.maxBytesToRetainForBackScroll.toString(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done),
@@ -105,6 +115,10 @@ fun GeneralSettingsPage(
         // Email address(s) for sharing
         SettingsFreeText(
             title = {Text(text=stringResource(R.string.default_sharing_email_addresses))},
+            icon = {Icon(
+                painterResource(R.drawable.ic_baseline_mail_outline_24),
+                contentDescription = stringResource(R.string.default_sharing_email_addresses),
+            )},
             label = {Text(text=stringResource(R.string.email_address))},
             previousText = settingsData.emailAddressForSharing,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Done),

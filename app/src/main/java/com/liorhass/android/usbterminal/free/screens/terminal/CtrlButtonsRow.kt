@@ -28,9 +28,10 @@ import com.liorhass.android.usbterminal.free.main.MainViewModel
 @Composable
 fun CtrlButtonsRow(
     mainViewModel: MainViewModel,
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
 //            .padding(bottom = 2.dp)
     ) {

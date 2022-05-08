@@ -182,6 +182,13 @@ class MainViewModel(
             usbCommService?.addObserver(communicationServiceObserver) // If already observed by this observer, this is NOP.
             usbCommService?.ioPacketsList?.addObserver(ioPacketsListObserver) // If already observed by this observer, this is NOP.
 
+            // Needed in the following scenario: The app is started and then hidden. At this
+            // point the service becomes foreground-service. Then the app is terminated (the
+            // service continues as a foreground-service). Then the app is restarted. At
+            // this point the app is running and the service is foreground-service. This
+            // should be avoided, so we move it here to the background just in case.
+            usbCommService?.becomeBackgroundService()
+
             usbDeviceFromIntent?.let {
                 connectToUsbPort(it, portNumber = 0, deviceType = UsbSerialDevice.DeviceType.AUTO_DETECT)
             }
@@ -256,9 +263,9 @@ class MainViewModel(
         }
         application.registerReceiver(usbAttachedOrDetachedBroadcastReceiver, intentFilter)
 
-        // If the activity was launched due to a USB device being connected to the device,
-        // we'll get that USB device in the intent. In that case we'll try to connect to it
-        // after the service starts and we bind to it
+        // If the activity was launched due to a USB device being connected to our device
+        // (phone/tablet), we'll get that USB device in the intent. In that case we'll try
+        // to connect to it after the service starts and we bind to it
         if (initialIntent.action == UsbManager.ACTION_USB_DEVICE_ATTACHED) {
             usbDeviceFromIntent = initialIntent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
         }
@@ -270,7 +277,8 @@ class MainViewModel(
 
             // Bind to our communication service. As the service starts and stops,
             // calls are made to callbacks defined by serviceConnection
-            val rc = application.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+            application.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+            // val rc = application.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
             // Timber.d("bindService() rc=$rc")
         }
 
@@ -296,6 +304,7 @@ class MainViewModel(
     }
 
     override fun onCleared() {
+        // Timber.d("onCleared()")
         super.onCleared()
         getApplication<Application>().unregisterReceiver(usbAttachedOrDetachedBroadcastReceiver)
 
@@ -305,6 +314,7 @@ class MainViewModel(
     }
 
     fun onActivityStart() {
+        // Timber.d("onActivityStart()")
         usbCommService?.becomeBackgroundService()
     }
     fun onActivityStop() {
@@ -670,7 +680,7 @@ class MainViewModel(
         private val initialIntent: Intent
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return MainViewModel(application, initialIntent) as T
         }
     }
