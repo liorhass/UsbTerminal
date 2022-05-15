@@ -12,6 +12,7 @@
 package com.liorhass.android.usbterminal.free.screens.terminal
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -31,6 +32,7 @@ import com.liorhass.android.usbterminal.free.settings.model.SettingsRepository
 import com.liorhass.android.usbterminal.free.ui.theme.LedColorWhenConnected
 import com.liorhass.android.usbterminal.free.ui.theme.LedColorWhenDisconnected
 import com.liorhass.android.usbterminal.free.ui.theme.LedColorWhenError
+import com.liorhass.android.usbterminal.free.ui.theme.UsbTerminalTheme
 import com.liorhass.android.usbterminal.free.usbserial.UsbSerialPort
 
 @Composable
@@ -58,6 +60,7 @@ fun StatusLine(
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .background(color = UsbTerminalTheme.extendedColors.statusLineBackgroundColor)
             .padding(1.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -74,6 +77,7 @@ fun StatusLine(
                 .padding(start = 4.dp, end = 10.dp)
                 .horizontalScroll(scroll),
             text = connectionStatusMsg,
+            color = UsbTerminalTheme.extendedColors.statusLineTextColor,
         )
         if (displayType == SettingsRepository.DisplayType.TEXT) {
             // Show cursor position (only on text screen)
@@ -82,6 +86,7 @@ fun StatusLine(
                     .padding(end = 6.dp),
                 text = "${cursorPosition.line}:${cursorPosition.column}",
                 fontSize = 14.sp,
+                color = UsbTerminalTheme.extendedColors.statusLineTextColor,
             )
             // Show screen dimensions WxH (only on text screen)
             Text(
@@ -89,6 +94,7 @@ fun StatusLine(
                     .padding(end = 6.dp),
                 text = "${screenDimensions.height}x${screenDimensions.width}",
                 fontSize = 14.sp,
+                color = UsbTerminalTheme.extendedColors.statusLineTextColor,
             )
         }
         // TXT or HEX indicator
@@ -100,6 +106,7 @@ fun StatusLine(
                 SettingsRepository.DisplayType.HEX -> stringResource(R.string.display_type_indicator_hex)
             },
             fontSize = 14.sp,
+            color = UsbTerminalTheme.extendedColors.statusLineTextColor,
         )
     }
 }

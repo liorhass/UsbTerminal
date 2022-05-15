@@ -57,9 +57,12 @@ data class ExtendedColors(
     val ledColorWhenDisconnected: Color,
     val textColorWhenConnected: Color,
     val textColorWhenDisconnected: Color,
+    val statusLineBackgroundColor: Color,
+    val statusLineTextColor: Color,
     val statusLineDividerColor: Color,
     val textToXmitInputFieldBackgroundColor: Color,
     val textToXmitInputFieldBorderColor: Color,
+    val ctrlButtonsLineBackgroundColor: Color,
 )
 
 private val LocalExtendedColors = staticCompositionLocalOf {
@@ -69,10 +72,13 @@ private val LocalExtendedColors = staticCompositionLocalOf {
         ledColorWhenConnected = LedColorWhenConnected,
         ledColorWhenDisconnected = LedColorWhenDisconnected,
         textColorWhenConnected = TextColorWhenConnected,
-        textColorWhenDisconnected = TextColorWhenDisconnected,
+        textColorWhenDisconnected = TextColorWhenDisconnectedForLightTheme,
+        statusLineBackgroundColor = Color.Black,
+        statusLineTextColor = Color.LightGray,
         statusLineDividerColor = Color.Transparent,
         textToXmitInputFieldBackgroundColor = Color.Transparent,
         textToXmitInputFieldBorderColor = Color.Transparent,
+        ctrlButtonsLineBackgroundColor = Color.DarkGray,
     )
 }
 
@@ -99,10 +105,13 @@ fun UsbTerminalTheme(
             ledColorWhenConnected = LedColorWhenConnected,
             ledColorWhenDisconnected = LedColorWhenDisconnected,
             textColorWhenConnected = TextColorWhenConnected,
-            textColorWhenDisconnected = TextColorWhenDisconnected,
+            textColorWhenDisconnected = TextColorWhenDisconnectedForDarkTheme,
+            statusLineBackgroundColor = Color.Black,
+            statusLineTextColor = Color.LightGray,
             statusLineDividerColor = Color.Gray,
             textToXmitInputFieldBackgroundColor = TextToXmitInputFieldBackgroundColorForDarkTheme,
             textToXmitInputFieldBorderColor = textToXmitInputFieldBorderColorForDarkTheme,
+            ctrlButtonsLineBackgroundColor = Color.DarkGray,
         )
     } else {
         ExtendedColors(
@@ -111,10 +120,13 @@ fun UsbTerminalTheme(
             ledColorWhenConnected = LedColorWhenConnected,
             ledColorWhenDisconnected = LedColorWhenDisconnected,
             textColorWhenConnected = TextColorWhenConnected,
-            textColorWhenDisconnected = TextColorWhenDisconnected,
+            textColorWhenDisconnected = TextColorWhenDisconnectedForLightTheme,
+            statusLineBackgroundColor = Color.Black,
+            statusLineTextColor = Color.LightGray,
             statusLineDividerColor = Color.Transparent,
             textToXmitInputFieldBackgroundColor = TextToXmitInputFieldBackgroundColorForLightTheme,
             textToXmitInputFieldBorderColor = textToXmitInputFieldBorderColorForLightTheme,
+            ctrlButtonsLineBackgroundColor = Color.DarkGray,
         )
     }
 

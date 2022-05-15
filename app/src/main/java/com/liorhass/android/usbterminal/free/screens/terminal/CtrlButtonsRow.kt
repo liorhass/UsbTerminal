@@ -11,10 +11,9 @@
 // limitations under the License.
 package com.liorhass.android.usbterminal.free.screens.terminal
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Icon
-import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.liorhass.android.usbterminal.free.R
 import com.liorhass.android.usbterminal.free.main.MainViewModel
+import com.liorhass.android.usbterminal.free.ui.theme.UsbTerminalTheme
 
 @Composable
 fun CtrlButtonsRow(
@@ -33,19 +33,22 @@ fun CtrlButtonsRow(
     Row(
         modifier = modifier
             .fillMaxWidth()
-//            .padding(bottom = 2.dp)
+            .background(color = UsbTerminalTheme.extendedColors.ctrlButtonsLineBackgroundColor)
+            .padding(vertical = 1.dp, horizontal = 1.dp)
     ) {
         ToggleButton(
             isSelected = mainViewModel.userInputHandler.ctrlButtonIsSelected.value,
             modifier = Modifier
 //                .defaultMinSize(minHeight = 1.dp)
-                .height(40.dp),
+                .height(40.dp)
+                .padding(horizontal = 1.dp),
             onClick = { mainViewModel.userInputHandler.onCtrlKeyButtonClick() }
         ) {
             Text(
                 text = stringResource(R.string.ctrl),
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colors.onBackground,
             )
         }
 
@@ -57,42 +60,46 @@ fun CtrlButtonsRow(
 //            .defaultMinSize(minHeight = 1.dp)
 
         OutlinedButton(
-            modifier = buttonModifier,
+            modifier = buttonModifier.padding(horizontal = 1.dp),
             onClick = { mainViewModel.userInputHandler.onLeftButtonClick() }
         ) {
             Icon(
                 // Icons.Filled.KeyboardArrowLeft,
                 painter = painterResource(id = R.drawable.ic_baseline_arrow_back_24),
+                tint = MaterialTheme.colors.onBackground,
                 contentDescription = stringResource(R.string.left)
             )
         }
         OutlinedButton(
-            modifier = buttonModifier,
+            modifier = buttonModifier.padding(horizontal = 1.dp),
             onClick = { mainViewModel.userInputHandler.onDownButtonClick() }
         ) {
             Icon(
                 // Icons.Filled.KeyboardArrowDown,
                 painter = painterResource(id = R.drawable.ic_baseline_arrow_downward_24),
+                tint = MaterialTheme.colors.onBackground,
                 contentDescription = stringResource(R.string.down)
             )
         }
         OutlinedButton(
-            modifier = buttonModifier,
+            modifier = buttonModifier.padding(horizontal = 1.dp),
             onClick = { mainViewModel.userInputHandler.onUpButtonClick() }
         ) {
             Icon(
                 // Icons.Filled.KeyboardArrowUp,
                 painter = painterResource(id = R.drawable.ic_baseline_arrow_upward_24),
+                tint = MaterialTheme.colors.onBackground,
                 contentDescription = stringResource(R.string.up)
             )
         }
         OutlinedButton(
-            modifier = buttonModifier,
+            modifier = buttonModifier.padding(horizontal = 1.dp),
             onClick = { mainViewModel.userInputHandler.onRightButtonClick() }
         ) {
             Icon(
                 //Icons.Filled.KeyboardArrowRight,
                 painter = painterResource(id = R.drawable.ic_baseline_arrow_forward_24),
+                tint = MaterialTheme.colors.onBackground,
                 contentDescription = stringResource(R.string.right)
             )
         }

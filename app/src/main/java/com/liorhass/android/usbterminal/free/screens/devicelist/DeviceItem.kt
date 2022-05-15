@@ -85,7 +85,10 @@ fun DeviceItem(
                     OutlinedButton(
                         onClick = { onDisconnectFromPortClick(itemId) },
                     ) {
-                        Text(text = stringResource(R.string.disconnect))
+                        Text(
+                            text = stringResource(R.string.disconnect),
+                            color = MaterialTheme.colors.onBackground,
+                        )
                     }
                 }
             } else {
@@ -97,14 +100,20 @@ fun DeviceItem(
                         OutlinedButton(
                             onClick = { onConnectToPortClick(itemId) },
                         ) {
-                            Text(text = stringResource(R.string.connect))
+                            Text(
+                                text = stringResource(R.string.connect),
+                                color = MaterialTheme.colors.onBackground,
+                            )
                         }
                         Spacer(Modifier.size(16.dp))
                     }
                     OutlinedButton(
                         onClick = { onSetDeviceTypeAndConnectToPortClick(itemId) },
                     ) {
-                        Text(text = stringResource(R.string.set_type_and_connect))
+                        Text(
+                            text = stringResource(R.string.set_type_and_connect),
+                            color = MaterialTheme.colors.onBackground,
+                        )
                     }
                 }
             }
