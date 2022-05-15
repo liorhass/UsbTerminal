@@ -8,8 +8,8 @@ android {
 
     defaultConfig {
         applicationId "com.liorhass.android.usbterminal.free"
-        versionCode 202
-        versionName "2.0.2"
+        versionCode 203
+        versionName "2.0.3"
         minSdkVersion 25
         targetSdkVersion 31
 
@@ -20,8 +20,6 @@ android {
 
         // Set the generated APK file name.  https://stackoverflow.com/a/28992851/1071117
         setProperty("archivesBaseName", "UsbTerminal_${versionName}_${versionCode}")
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         // For showing compile time in the app. From: https://stackoverflow.com/a/26372474/1071117
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
