@@ -59,6 +59,7 @@ class SettingsRepository private constructor(private val context: Context) {
         val loopBack: Boolean = DefaultValues.loopBack,
         val fontSize: Int = DefaultValues.fontSize, // in sp
         val soundOn: Boolean = DefaultValues.soundOn,
+        val silentlyDropUnrecognizedCtrlChars: Boolean = DefaultValues.silentlyDropUnrecognizedCtrlChars,
 
         // Serial comm
         val baudRate: Int = DefaultValues.baudRate,
@@ -95,6 +96,7 @@ class SettingsRepository private constructor(private val context: Context) {
         const val loopBack = false
         const val fontSize = 16
         const val soundOn = true
+        const val silentlyDropUnrecognizedCtrlChars = true
 
         // Serial comm
         const val baudRate = 115200
@@ -120,6 +122,7 @@ class SettingsRepository private constructor(private val context: Context) {
         val BYTES_SENT_BY_ENTER_KEY_KEY = intPreferencesKey("bsbek")
         val LOOPBACK_KEY = booleanPreferencesKey("loopback")
         val SOUND_ON_KEY = booleanPreferencesKey("sound")
+        val DROP_UNRECOGNIZED_CTRL_CHARS_KEY = booleanPreferencesKey("ducc")
         val FONT_SIZE_KEY = intPreferencesKey("fontSize")
         val BAUD_RATE_KEY = intPreferencesKey("baudRate")
         val BAUD_RATE_FREE_INPUT_KEY = intPreferencesKey("baudRateFreeInput")
@@ -159,6 +162,7 @@ class SettingsRepository private constructor(private val context: Context) {
             loopBack = preferences[SettingsKeys.LOOPBACK_KEY] ?: DefaultValues.loopBack,
             fontSize = preferences[SettingsKeys.FONT_SIZE_KEY] ?: DefaultValues.fontSize,
             soundOn = preferences[SettingsKeys.SOUND_ON_KEY] ?: DefaultValues.soundOn,
+            silentlyDropUnrecognizedCtrlChars = preferences[SettingsKeys.DROP_UNRECOGNIZED_CTRL_CHARS_KEY] ?: DefaultValues.silentlyDropUnrecognizedCtrlChars,
 
             // Serial communication
             baudRate  = preferences[SettingsKeys.BAUD_RATE_KEY] ?: DefaultValues.baudRate,
@@ -297,6 +301,7 @@ class SettingsRepository private constructor(private val context: Context) {
     fun setBytesSentByEnterKey(bytesSentByEnterKey: Int) { updateSettingsDataStore(SettingsKeys.BYTES_SENT_BY_ENTER_KEY_KEY, bytesSentByEnterKey) }
     fun setLoopBack(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.LOOPBACK_KEY, newValue) }
     fun setSoundOn(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.SOUND_ON_KEY, newValue) }
+    fun setSilentlyDropUnrecognizedCtrlChars(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.DROP_UNRECOGNIZED_CTRL_CHARS_KEY, newValue) }
     fun setSetDTROnConnect(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.SET_DTR_KEY, newValue) }
     fun setSetRTSOnConnect(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.SET_RTS_KEY, newValue) }
     fun setLogSessionDataToFile(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.LOG_SESSION_DATA_TO_FILE_KEY, newValue) }

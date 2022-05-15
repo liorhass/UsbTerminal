@@ -345,7 +345,7 @@ class MainViewModel(
     // Handle events triggered by IOPacketsList (new data received)
     inner class IOPacketsListObserver : Observer {
         override fun update(o: Observable?, arg: Any?) {
-            Timber.d("IOPacketsListObserver.update() totalSize=${usbCommService?.ioPacketsList?.getTotalSize()} nextByteToProcessInIOPacketsList=(${nextByteToProcessInIOPacketsList.packetSerialNumber}, ${nextByteToProcessInIOPacketsList.offsetInPacket})")
+            // Timber.d("IOPacketsListObserver.update() totalSize=${usbCommService?.ioPacketsList?.getTotalSize()} nextByteToProcessInIOPacketsList=(${nextByteToProcessInIOPacketsList.packetSerialNumber}, ${nextByteToProcessInIOPacketsList.offsetInPacket})")
             viewModelScope.launch(Dispatchers.Default) {
                 nextByteToProcessInIOPacketsListMutex.withLock {
                     nextByteToProcessInIOPacketsList = usbCommService?.ioPacketsList?.processData(
@@ -633,6 +633,10 @@ class MainViewModel(
 
         if (newSettingsData.soundOn != oldSettingsData.soundOn) {
             screenTextModel.soundOn = newSettingsData.soundOn
+        }
+
+        if (newSettingsData.silentlyDropUnrecognizedCtrlChars != oldSettingsData.silentlyDropUnrecognizedCtrlChars) {
+            screenTextModel.silentlyDropUnrecognizedCtrlChars = newSettingsData.silentlyDropUnrecognizedCtrlChars
         }
     }
 

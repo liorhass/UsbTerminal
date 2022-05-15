@@ -137,6 +137,7 @@
     </string>
     <string name="local_echo">Local echo (loop back)</string>
     <string name="sound_on">Beep when Bell char received</string>
+    <string name="silently_drop_unrecognized_ctrl_chars">Silently drop unrecognized control-chars</string>
     <string name="fg_service_notification_title">USB communication is active in the background</string>
     <string name="open_app_all_caps">OPEN APP</string>
     <string name="stop_all_caps">STOP</string>

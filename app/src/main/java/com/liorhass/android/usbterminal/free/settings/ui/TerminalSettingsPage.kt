@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.liorhass.android.usbterminal.free.R
 import com.liorhass.android.usbterminal.free.main.MainViewModel
 import com.liorhass.android.usbterminal.free.settings.model.SettingsRepository
+import com.liorhass.android.usbterminal.free.settings.ui.lib.SettingsCheckbox
 import com.liorhass.android.usbterminal.free.settings.ui.lib.SettingsSingleChoice
 import com.liorhass.android.usbterminal.free.settings.ui.lib.SettingsSwitch
 import com.liorhass.android.usbterminal.free.ui.util.GeneralDialog
@@ -175,6 +176,15 @@ fun TerminalSettingsPage(
             checked = settingsData.soundOn
         ) { checked ->
             mainViewModel.settingsRepository.setSoundOn(checked)
+        }
+
+        // Silently drop unrecognized control chars
+        SettingsCheckbox(
+            title = {Text(text=stringResource(R.string.silently_drop_unrecognized_ctrl_chars))},
+            replaceIconWithSameSpace = true,
+            checked = settingsData.silentlyDropUnrecognizedCtrlChars
+        ) { checked ->
+            mainViewModel.settingsRepository.setSilentlyDropUnrecognizedCtrlChars(checked)
         }
     }
 }

@@ -130,6 +130,8 @@ class ScreenTextModel(
     }
 
     var soundOn = SettingsRepository.DefaultValues.soundOn
+    var silentlyDropUnrecognizedCtrlChars: Boolean = SettingsRepository.DefaultValues.silentlyDropUnrecognizedCtrlChars
+        set(value) {stateMachine.silentlyDropUnrecognizedCtrlChars = value}
 
     private val uiUpdateTriggered = AtomicBoolean(false)
     private var screenHeight = 0 // Number of lines that fit in the screen (visible lines)
@@ -337,6 +339,11 @@ class ScreenTextModel(
                         tag = "clr",
                     )
                     if (alsoRememberRendition) currentGraphicRendition.add(it)
+                }
+                49 -> {
+                    // This code is "Default background color". The linenoise library sometimes
+                    // sends this code. Since we don't support changing background color, we
+                    // can simply ignore this code.
                 }
                 else -> Timber.w("selectGraphicRendition: Unsupported parameter: $it")
             }

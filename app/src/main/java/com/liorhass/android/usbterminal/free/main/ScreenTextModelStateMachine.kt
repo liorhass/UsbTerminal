@@ -11,6 +11,7 @@
 // limitations under the License.
 package com.liorhass.android.usbterminal.free.main
 
+import com.liorhass.android.usbterminal.free.settings.model.SettingsRepository
 import timber.log.Timber
 import java.lang.Integer.max
 import java.lang.StringBuilder
@@ -47,6 +48,7 @@ class ScreenTextModelStateMachine(
     private var param1 = StringBuilder(4)
     private var params = mutableListOf<Int>() // For use with multiple params that are separated by ';'
     private var keepParams = false
+    var silentlyDropUnrecognizedCtrlChars = SettingsRepository.DefaultValues.silentlyDropUnrecognizedCtrlChars
 
     /**
      * Process a byte received from the serial device
@@ -116,9 +118,13 @@ class ScreenTextModelStateMachine(
                 screenTextModel.beep()
                 0
             }
-            else -> { // All unsupported control chars are displayed as ⸮ (Unicode character U+2E2E)
-                result[0] = '\u2e2e'
-                1
+            else -> { // All unsupported control chars are displayed as ⸮ (Unicode character U+2E2E) unless configured to be ignored
+                if (silentlyDropUnrecognizedCtrlChars) {
+                    0
+                } else {
+                    result[0] = '\u2e2e'
+                    1
+                }
             }
         }
     }
