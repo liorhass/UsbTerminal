@@ -11,17 +11,13 @@
 // limitations under the License.
 package com.liorhass.android.usbterminal.free.screens.terminal
 
-import android.graphics.Rect
-import android.view.ViewTreeObserver
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.dp
 import com.liorhass.android.usbterminal.free.R
 import com.liorhass.android.usbterminal.free.main.MainViewModel
@@ -76,23 +72,25 @@ fun TerminalScreen(
 
         if (displayType == SettingsRepository.DisplayType.HEX) {
             TerminalScreenHexSection(
-                mainViewModel.screenHexTextBlocksState,
-                mainViewModel.screenHexShouldScrollToBottom,
-                mainViewModel::onScreenHexScrolledToBottom,
-                fontSize,
-                mainFocusRequester,
-                auxFocusRequester,
+                textBlocks = mainViewModel.screenHexTextBlocksState,
+                shouldScrollToBottom = mainViewModel.screenHexShouldScrollToBottom,
+                onScrolledToBottom = mainViewModel::onScreenHexScrolledToBottom,
+                fontSize = fontSize,
+                mainFocusRequester = mainFocusRequester,
+                auxFocusRequester = auxFocusRequester,
+                onKeyboardStateChange = { mainViewModel.remeasureScreenDimensions() }
             )
         } else {
             TerminalScreenTextSection(
-                mainViewModel.screenLines,
-                shouldMeasureScreenDimensions,
-                mainViewModel::onScreenDimensionsMeasured,
-                mainViewModel.screenTextShouldScrollToBottom,
-                mainViewModel::onScrolledToBottom,
-                fontSize,
-                mainFocusRequester,
-                auxFocusRequester,
+                lines = mainViewModel.screenLines,
+                shouldMeasureScreenDimensions = shouldMeasureScreenDimensions,
+                onScreenDimensionsMeasured = mainViewModel::onScreenDimensionsMeasured,
+                shouldScrollToBottom = mainViewModel.screenTextShouldScrollToBottom,
+                onScrolledToBottom = mainViewModel::onScrolledToBottom,
+                fontSize = fontSize,
+                mainFocusRequester = mainFocusRequester,
+                auxFocusRequester = auxFocusRequester,
+                onKeyboardStateChange = { mainViewModel.remeasureScreenDimensions() }
             )
         }
         TextToXmitInputField(
@@ -135,20 +133,13 @@ fun TerminalScreen(
             )
         }
     }
-    LaunchedEffect(keyboardAsState.value) {
-        // Launch every time KB changes state (from close to open and vice versa)
-        // Timber.d("KB State changed")
-        mainViewModel.remeasureScreenDimensions()
-    }
 }
 
 fun openSoftKeyboard(
     coroutineScope: CoroutineScope,
-    listState: LazyListState,
-    listSize: Int,
     mainFocusRequester: FocusRequester,
     auxFocusRequester: FocusRequester,
-    ) {
+) {
     coroutineScope.launch {
         // This is a hack. All we want it to request focus to our hidden
         // TextField (which should display the soft-keyboard). The problem
@@ -158,40 +149,8 @@ fun openSoftKeyboard(
         // focus does nothing, and the KB remains close. To bypass this
         // we move the focus to a second hidden TextField and back. There's
         // a small delay to let the system catch these focus changes.
-        val atBottom = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == listState.layoutInfo.totalItemsCount - 1
         auxFocusRequester.requestFocus()
         delay(50)
         mainFocusRequester.requestFocus()
-
-        // Since we just opened the KB we should scroll to bottom (but only if we were at the bottom beforehand)
-        if (atBottom) {
-            delay(500) // Yuck. let the kb enough time to open. A better solution here: https://stackoverflow.com/a/69533584/1071117
-            listState.scrollToItem(listSize - 1)
-        }
     }
 }
-
-/**
- * Tell if the soft keyboard is open or closed. From: https://stackoverflow.com/a/69533584/1071117
- */
-val keyboardAsState: State<Boolean>
-    @Composable
-    get() {
-        val keyboardState = remember { mutableStateOf(false) }
-        val view = LocalView.current
-        DisposableEffect(view) {
-            val onGlobalListener = ViewTreeObserver.OnGlobalLayoutListener {
-                val rect = Rect()
-                view.getWindowVisibleDisplayFrame(rect)
-                val screenHeight = view.rootView.height
-                val keypadHeight = screenHeight - rect.bottom
-                keyboardState.value = keypadHeight > screenHeight * 0.15
-            }
-            view.viewTreeObserver.addOnGlobalLayoutListener(onGlobalListener)
-
-            onDispose {
-                view.viewTreeObserver.removeOnGlobalLayoutListener(onGlobalListener)
-            }
-        }
-        return keyboardState
-    }

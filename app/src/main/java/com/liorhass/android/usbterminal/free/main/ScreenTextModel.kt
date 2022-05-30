@@ -186,11 +186,13 @@ class ScreenTextModel(
     /** Set screen dimensions in characters */
     fun setScreenDimensions(width: Int, height: Int) {
         screenHeight = height
-        coroutineScope.launch {
-            mutex.withLock {
-                maxLineLen = width
-                screenLines.forEach { screenLine ->
-                    screenLine.setMaxLineLength(maxLineLen)
+        if (width != maxLineLen) {
+            coroutineScope.launch {
+                mutex.withLock {
+                    maxLineLen = width
+                    screenLines.forEach { screenLine ->
+                        screenLine.setMaxLineLength(maxLineLen)
+                    }
                 }
             }
         }
@@ -514,10 +516,16 @@ class ScreenTextModel(
 
     internal fun beep(durationMs: Int = 100) {
         if (soundOn) {
-            ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME).startTone(
-                ToneGenerator.TONE_PROP_PROMPT,
-                durationMs
-            )
+            try {
+                ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME).startTone(
+                    ToneGenerator.TONE_PROP_PROMPT,
+                    durationMs
+                )
+            } catch (e: Exception) {
+                // Sometimes we get an exception in ToneGenerator's constructor. We can afford
+                // ourselves to ignore this
+                Timber.e("beep(): ${e.message}")
+            }
         }
     }
 

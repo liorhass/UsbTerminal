@@ -14,8 +14,10 @@ package com.liorhass.android.usbterminal.free.screens.terminal
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -31,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import com.liorhass.android.usbterminal.free.main.MainViewModel
 import com.liorhass.android.usbterminal.free.main.ScreenLine
 import com.liorhass.android.usbterminal.free.ui.theme.DefaultTextColorInTextMode
+import com.liorhass.android.usbterminal.free.ui.util.isKeyboardOpenAsState
 import kotlinx.coroutines.delay
 
 @Composable
@@ -43,26 +46,32 @@ fun ColumnScope.TerminalScreenTextSection(
     fontSize: Int,
     mainFocusRequester: FocusRequester,
     auxFocusRequester: FocusRequester,
+    onKeyboardStateChange: () -> Unit,
 ) {
-    val listState = rememberLazyListState()
+    val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
+    val isKeyboardOpen by isKeyboardOpenAsState()
+    var atBottomBeforeKBWasOpened by remember { mutableStateOf(false) }
 
-    if (shouldMeasureScreenDimensions != 0) {
-        MeasureScreenDimensions(onScreenDimensionsMeasured, fontSize, shouldMeasureScreenDimensions)
-    } else {
-        // Used to prevent ripple effect when clicked. https://stackoverflow.com/a/66703893/1071117
-        val interactionSource = remember { MutableInteractionSource() }
+    val interactionSource = remember { MutableInteractionSource() }
+    Box(modifier = Modifier
+        .fillMaxWidth()
+        .weight(1f, fill = true) // We use this instead of fillMaxSize() so TerminalScreenTextSection won't fill the screen and leave room for the status line at the bottom
+    ) {
+        if (shouldMeasureScreenDimensions != 0) {
+            MeasureScreenDimensions(onScreenDimensionsMeasured, fontSize, shouldMeasureScreenDimensions)
+        }
         LazyColumn(
-            state = listState,
+            state = lazyListState,
             modifier = Modifier
                 .fillMaxSize()
-                .weight(1f, true)
+                // .weight(1f, true)
                 .background(Color.Black) //todo: from config in combination with text color
                 .clickable(interactionSource, indication = null) {
+                    atBottomBeforeKBWasOpened =
+                        lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == lazyListState.layoutInfo.totalItemsCount - 1
                     openSoftKeyboard(
                         coroutineScope = coroutineScope,
-                        listState = listState,
-                        listSize = lines.value.size,
                         mainFocusRequester = mainFocusRequester,
                         auxFocusRequester = auxFocusRequester,
                     )
@@ -75,13 +84,19 @@ fun ColumnScope.TerminalScreenTextSection(
                 TerminalScreenLine(line, fontSize)
             }
         }
-        if (shouldScrollToBottom.value) {
-            LaunchedEffect(lines.value) {
-                listState.scrollToItem(lines.value.size)
-                delay(100)
-                listState.scrollToItem(lines.value.size)
-                onScrolledToBottom()
-            }
+    }
+    LaunchedEffect(key1 = isKeyboardOpen) {
+        if (isKeyboardOpen && atBottomBeforeKBWasOpened) {
+           lazyListState.scrollToItem(lines.value.lastIndex)
+        }
+        onKeyboardStateChange()
+    }
+    if (shouldScrollToBottom.value) {
+        LaunchedEffect(lines.value.size) {
+            lazyListState.scrollToItem(lines.value.lastIndex)
+            delay(100)
+            lazyListState.scrollToItem(lines.value.lastIndex)
+            onScrolledToBottom()
         }
     }
 }

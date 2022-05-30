@@ -27,7 +27,7 @@ import com.liorhass.android.usbterminal.free.main.MainViewModel
 import com.liorhass.android.usbterminal.free.main.ScreenLine
 
 @Composable
-fun ColumnScope.MeasureScreenDimensions(
+fun MeasureScreenDimensions(
     onMeasuredScreenDimensions: (MainViewModel.ScreenDimensions) -> Unit,
     fontSize: Int,
     requestUID: Int,
@@ -37,10 +37,8 @@ fun ColumnScope.MeasureScreenDimensions(
     var screenDimensions =  MainViewModel.ScreenDimensions(0,0)
     val longLine = ScreenLine(text = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx$requestUID")
     Box(modifier = Modifier
-        .fillMaxWidth()
-        .fillMaxWidth()
-        .weight(1f, true)
-        .background(Color.Black) // todo: Should be text-screen background color (if it's not always black)
+        .fillMaxSize()
+        .background(Color.Transparent) // todo: Should be text-screen background color (if it's not always black)
     ) {
         TerminalScreenLine(
             line = longLine,
@@ -48,7 +46,6 @@ fun ColumnScope.MeasureScreenDimensions(
             onTextLayout = { textLayoutResult ->
                 val lineEndIndex = textLayoutResult.getLineEnd(lineIndex = 0, visibleEnd = true)
                 screenDimensions = screenDimensions.copy(width = lineEndIndex)
-                // onMeasuredScreenWidth(lineEndIndex)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -58,16 +55,20 @@ fun ColumnScope.MeasureScreenDimensions(
         // A hack to measure screen height in lines:
         // We draw many lines and use listState.layoutInfo.visibleItemsInfo.size to get the
         // number of visible lines
-        val line = ScreenLine(text = if (requestUID == 999999999) " " else "  ") // Dummy use of requestUID. Only to force recomposition when it changes
+        val line = ScreenLine(text = if (requestUID == 999999999) " " else "") // Dummy use of requestUID. Only to force recomposition when it changes
         val listState = rememberLazyListState()
         LazyColumn(
             state = listState,
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Transparent)
+                //todo:2brm  .background(Color.Black), // todo: Should be text-screen background color (if it's not always black)
         ) {
             items(100) {
-                TerminalScreenLine(line, fontSize)
+                TerminalScreenLine(
+                    line = line,
+                    fontSize = fontSize,
+                    modifier = Modifier.alpha(0f),
+                )
             }
         }
         LaunchedEffect(key1 = requestUID) {

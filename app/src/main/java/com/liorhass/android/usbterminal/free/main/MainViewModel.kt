@@ -100,7 +100,7 @@ class MainViewModel(
     //     on a LaunchedEffect which reset the flag to false
     //  4. Before a recomposition happens (due to the flag reset) some other code
     //     triggers another measurement of the screen, which sets the flag to true again
-    //  5. Finally the UI is ready to recompose, buf from Compose's perspective no
+    //  5. Finally the UI is ready to recompose, but from Compose's perspective no
     //     recomposition is needed since the flag never changed (was true and is
     //     still true).
     // The solution is to use an Int instead of a Boolean. 0 marks that no measurement
@@ -112,11 +112,15 @@ class MainViewModel(
     private val _shouldMeasureScreenDimensions = mutableStateOf(uid)
     val shouldMeasureScreenDimensions: State<Int> = _shouldMeasureScreenDimensions
     fun onScreenDimensionsMeasured(screenDimensions: ScreenDimensions) {
+        // Timber.d("onScreenDimensionsMeasured(): width=${screenDimensions.width} height=${screenDimensions.height}")
         _shouldMeasureScreenDimensions.value = 0
         if (screenDimensions != _screenDimensions.value) {
+            val shouldRedrawScreen = screenDimensions.width != _screenDimensions.value.width
             _screenDimensions.value = screenDimensions
             screenTextModel.setScreenDimensions(screenDimensions.width, screenDimensions.height)
-            redrawScreen()
+            if (shouldRedrawScreen) {
+                redrawScreen()
+            }
         }
     }
     fun remeasureScreenDimensions() {
@@ -300,7 +304,7 @@ class MainViewModel(
 
     fun onMainActivityCreate() {
         // We get called here in the main activity's onCreate()
-        _shouldMeasureScreenDimensions.value = uid
+        remeasureScreenDimensions()
     }
 
     override fun onCleared() {
@@ -627,7 +631,7 @@ class MainViewModel(
         if (newSettingsData.fontSize != oldSettingsData.fontSize) {
             viewModelScope.launch {
                 clearScreen(alsoEraseBufferedData = false)
-                _shouldMeasureScreenDimensions.value = uid
+                remeasureScreenDimensions()
             }
         }
 

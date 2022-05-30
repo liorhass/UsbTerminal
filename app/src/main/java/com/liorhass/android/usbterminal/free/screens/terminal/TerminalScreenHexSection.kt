@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.liorhass.android.usbterminal.free.main.ScreenHexModel
+import com.liorhass.android.usbterminal.free.ui.util.isKeyboardOpenAsState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -39,29 +40,30 @@ fun ColumnScope.TerminalScreenHexSection(
     fontSize: Int,
     mainFocusRequester: FocusRequester,
     auxFocusRequester: FocusRequester,
+    onKeyboardStateChange: () -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val listState = rememberLazyListState()
+    val lazyListState = rememberLazyListState()
+    val isKeyboardOpen by isKeyboardOpenAsState()
+    var atBottomBeforeKBWasOpened by remember { mutableStateOf(false) }
 
     // Used to prevent ripple effect when clicked. https://stackoverflow.com/a/66703893/1071117
     val interactionSource = remember { MutableInteractionSource() }
 
     LazyColumn(
-        state = listState,
+        state = lazyListState,
         modifier = Modifier
             .fillMaxSize()
             .weight(1f, true)
             .background(Color.Black) //todo: from config in combination with text color
             .clickable(interactionSource, indication = null) {
-                coroutineScope.launch {
-                    openSoftKeyboard(
-                        coroutineScope = coroutineScope,
-                        listState = listState,
-                        listSize = textBlocks.value.size,
-                        mainFocusRequester = mainFocusRequester,
-                        auxFocusRequester = auxFocusRequester,
-                    )
-                }
+                atBottomBeforeKBWasOpened =
+                    lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == lazyListState.layoutInfo.totalItemsCount - 1
+                openSoftKeyboard(
+                    coroutineScope = coroutineScope,
+                    mainFocusRequester = mainFocusRequester,
+                    auxFocusRequester = auxFocusRequester,
+                )
             },
     ) {
         items(
@@ -76,9 +78,15 @@ fun ColumnScope.TerminalScreenHexSection(
             )
         }
     }
+    LaunchedEffect(key1 = isKeyboardOpen) {
+        if (isKeyboardOpen && atBottomBeforeKBWasOpened) {
+            lazyListState.scrollToItem(textBlocks.value.lastIndex)
+        }
+        onKeyboardStateChange()
+    }
     if (shouldScrollToBottom.value) {
         LaunchedEffect(textBlocks.value) {
-            listState.scrollToItem(textBlocks.value.size)
+            lazyListState.scrollToItem(textBlocks.value.lastIndex)
             onScrolledToBottom()
         }
     }
