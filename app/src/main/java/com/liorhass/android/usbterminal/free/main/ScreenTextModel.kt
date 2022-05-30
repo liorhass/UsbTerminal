@@ -3,7 +3,9 @@
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
+//
 // http://www.apache.org/licenses/LICENSE-2.0
+//
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -129,9 +131,13 @@ class ScreenTextModel(
         _shouldScrollToBottom.value = false
     }
 
+    // These are set by MainViewModel whenever settings are changed
     var soundOn = SettingsRepository.DefaultValues.soundOn
     var silentlyDropUnrecognizedCtrlChars: Boolean = SettingsRepository.DefaultValues.silentlyDropUnrecognizedCtrlChars
-        set(value) {stateMachine.silentlyDropUnrecognizedCtrlChars = value}
+        set(value) {
+            field = value
+            stateMachine.silentlyDropUnrecognizedCtrlChars = value
+        }
 
     private val uiUpdateTriggered = AtomicBoolean(false)
     private var screenHeight = 0 // Number of lines that fit in the screen (visible lines)
