@@ -24,6 +24,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.liorhass.android.usbterminal.free.BuildConfig
 import com.liorhass.android.usbterminal.free.R
 import com.liorhass.android.usbterminal.free.main.MainViewModel
 import com.liorhass.android.usbterminal.free.settings.model.SettingsRepository
@@ -67,6 +68,12 @@ class LogFilesListViewModel(
     fun onDeleteConfirmed() {
         deleteSelectedFiles()
         shouldDisplayDeleteConfirmationDialog = false
+    }
+
+    private val _shouldViewFile = MutableStateFlow(Uri.EMPTY)
+    val shouldViewFile = _shouldViewFile.asStateFlow()
+    fun fileViewed() {
+        _shouldViewFile.value = Uri.EMPTY
     }
 
     data class FileSharingInfo(
@@ -132,6 +139,30 @@ class LogFilesListViewModel(
         _filesList.value = _filesList.value.sortedWith(LogFileNameComparator(newSortOrder))
     }
 
+    fun onPreviewFileButtonClick() {
+        val selectedFile = _filesList.value.firstOrNull { it.isSelected }
+        if (selectedFile == null) {
+            Timber.e("onPreviewFileButtonClick(): selectedFile=null")
+            return
+        }
+        // Timber.d("onPreviewFileButtonClick(): selected file name = ${selectedFile.fileName}")
+
+        val logFilesDir = LogFile.getLogFilesDir(getApplication())
+        if (logFilesDir == null) {
+            Timber.e("onPreviewFileButtonClick(): logFilesDir=null")
+            return
+        }
+
+        val file = File(logFilesDir, selectedFile.fileName)
+        val uri = FileProvider.getUriForFile(
+            getApplication(),
+            BuildConfig.APPLICATION_ID + ".fileprovider",
+            file)
+
+        // Timber.d("onPreviewFileButtonClick(): uri=$uri")
+        _shouldViewFile.value = uri
+    }
+
     fun onShareButtonClick() {
         viewModelScope.launch(Dispatchers.IO) {
             Timber.d("onShareButtonClick()")
@@ -142,9 +173,11 @@ class LogFilesListViewModel(
 
             val uri: Uri = FileProvider.getUriForFile(
                 getApplication(),
-                "com.liorhass.android.usbterminal.free.fileprovider",
+                BuildConfig.APPLICATION_ID + ".fileprovider",
                 zipFile)
 
+            // Sharing is done in the Activity and not here because sharing needs to be done
+            // from within an Activity context
             _shouldShareFile.value = FileSharingInfo(
                 file = zipFile,
                 uri = uri,
@@ -166,7 +199,7 @@ class LogFilesListViewModel(
     }
 
     fun onLogFilesListItemClick(itemIndex: Int) {
-        Timber.d("onLogFilesListItemClick(): itemIndex=$itemIndex")
+        // Timber.d("onLogFilesListItemClick(): itemIndex=$itemIndex")
         _filesList.value = _filesList.value
             .mapIndexed { index, item ->
                 LogFileListItemModel(
@@ -210,7 +243,7 @@ class LogFilesListViewModel(
 
         _filesList.value.filter { it.isSelected }.forEach { logFileListItemModel ->
             val fileName = logFileListItemModel.fileName
-            Timber.d("Zipping $fileName")
+            // Timber.d("Zipping $fileName")
             zos.putNextEntry(ZipEntry(fileName))
             val bis = BufferedInputStream(FileInputStream(File(logFilesDir, fileName)))
             bis.copyTo(zos)

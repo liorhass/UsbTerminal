@@ -158,6 +158,7 @@
     <string name="connect">Connect</string>
     <string name="disconnect">Disconnect</string>
     <string name="set_type_and_connect">Set type and connect</string>
+    <string name="preview">Preview</string>
     <string name="delete">Delete</string>
     <string name="share">Share</string>
     <string name="refresh">Refresh</string>

@@ -15,13 +15,17 @@ package com.liorhass.android.usbterminal.free.screens.logfiles
 
 import android.app.Application
 import android.content.Intent
+import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -61,13 +65,12 @@ fun LogFilesListTopAppBarActions(mainViewModel: MainViewModel, isTopBarInContext
             mainViewModel = mainViewModel,
         )
     )
+    val nSelected by logFilesListViewModel.nSelected.collectAsStateLifecycleAware()
 
     if (isTopBarInContextualMode) {
         // Look at https://android--code.blogspot.com/2021/03/jetpack-compose-how-to-use-topappbar.html
         IconButton(
-            onClick = {
-                logFilesListViewModel.onDeleteButtonClick()
-            }
+            onClick = { logFilesListViewModel.onDeleteButtonClick() }
         ) {
             Icon(
                 modifier = Modifier.padding(start = 0.dp, end = 0.dp),
@@ -77,9 +80,7 @@ fun LogFilesListTopAppBarActions(mainViewModel: MainViewModel, isTopBarInContext
             )
         }
         IconButton(
-            onClick = {
-                logFilesListViewModel.onShareButtonClick()
-            }
+            onClick = { logFilesListViewModel.onShareButtonClick() }
         ) {
             Icon(
                 modifier = Modifier.padding(start = 0.dp, end = 0.dp),
@@ -88,11 +89,21 @@ fun LogFilesListTopAppBarActions(mainViewModel: MainViewModel, isTopBarInContext
                 tint = UsbTerminalTheme.extendedColors.contextualAppBarOnBackground,
             )
         }
+        if (nSelected == 1) {
+            IconButton(
+                onClick = { logFilesListViewModel.onPreviewFileButtonClick() }
+            ) {
+                Icon(
+                    modifier = Modifier.padding(start = 0.dp, end = 0.dp),
+                    painter = painterResource(id = R.drawable.ic_baseline_preview_24),
+                    contentDescription = stringResource(R.string.preview),
+                    tint = UsbTerminalTheme.extendedColors.contextualAppBarOnBackground,
+                )
+            }
+        }
     } else {
         IconButton(
-            onClick = {
-                logFilesListViewModel.onRefreshButtonClick()
-            }
+            onClick = { logFilesListViewModel.onRefreshButtonClick() }
         ) {
             Icon(
                 modifier = Modifier.padding(start = 0.dp, end = 0.dp),
@@ -101,9 +112,7 @@ fun LogFilesListTopAppBarActions(mainViewModel: MainViewModel, isTopBarInContext
             )
         }
         IconButton(
-            onClick = {
-                logFilesListViewModel.onToggleSortOrderClick()
-            }
+            onClick = { logFilesListViewModel.onToggleSortOrderClick() }
         ) {
             Icon(
                 modifier = Modifier.padding(start = 0.dp, end = 0.dp),
@@ -163,9 +172,30 @@ fun LogFilesListScreen(
         }
     )
 
+    val context = LocalContext.current
+
+    // View a log file with external activity that can handle text/plain
+    // We do this here and not in our ViewModel because launching activities needs
+    // to be done from within an Activity context.
+    LaunchedEffect(context) {
+        viewModel.shouldViewFile.collect { uri ->
+            val activity = context.getActivity()
+            if (!Uri.EMPTY.equals(uri)) {
+                if (activity != null) {
+                    // Timber.d("uri='$uri'")
+                    val myIntent = Intent(Intent.ACTION_VIEW)
+                    myIntent.setDataAndType(uri, "text/plain")
+                    myIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION /*or Intent.FLAG_GRANT_WRITE_URI_PERMISSION*/)
+                    startActivity(activity, myIntent, null)
+                }
+                viewModel.fileViewed()
+            }
+        }
+    }
+
+    // Share zipped log files
     // We do this here and not in our ViewModel because sharing needs to be done
     // from within an Activity context.
-    val context = LocalContext.current
     LaunchedEffect(context) {
         val activity = context.getActivity()
         viewModel.shouldShareFile.collect { fileShareInfo ->
