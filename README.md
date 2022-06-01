@@ -37,8 +37,8 @@ The app is available at the [Google Play Store](https://play.google.com/store/ap
 * Background communication - the app can maintain connection and
   continue receiving data even when it is in the background (not the app
   the user is currently interacting with)
-* Log sessions to files. These log files can then be shared in order to
-  be viewed or analyzed with external tools
+* Log sessions to files. These log files can then be viewed or shared in
+  order to be analyzed with external tools
 * Extensive built-in list of Vendor-ID/Product-ID (VID/PID) pairs that
   map to the appropriate device type. This means that usually the app
   detects on its own the type of device. In case the app encounters an
@@ -51,11 +51,12 @@ The app is available at the [Google Play Store](https://play.google.com/store/ap
 * Blinking cursor that indicates the current cursor position on the screen
 * Status line indicating connection state, error messages, screen size,
   cursor location and display mode
-* Build-in help. No need to be online to read the help screen
-* Build-in shortcut to reset an Arduino (by pulling both DTR and RTS
+* Built-in help. No need to be online to read the help screen
+* Built-in shortcut to reset an Arduino (by pulling both DTR and RTS
   low for 10mSec)
 * Build-in shortcut to reset an ESP32 dev-board (by setting both DTR and
-  RTS to high, then pulling RTS low for 400mSec then setting it high again)
+  RTS to high for 200mSec, then pulling RTS low for 400mSec then setting
+  it high again)
 * No root required
 
 ### A note to Arduino users:

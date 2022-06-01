@@ -520,16 +520,16 @@ class ScreenTextModel(
         }
     }
 
-    internal fun beep(durationMs: Int = 100) {
+    internal fun beep(durationMs: Int = 200) {
         if (soundOn) {
             try {
-                ToneGenerator(AudioManager.STREAM_MUSIC, ToneGenerator.MAX_VOLUME).startTone(
+                ToneGenerator(AudioManager.STREAM_NOTIFICATION, ToneGenerator.MAX_VOLUME).startTone(
                     ToneGenerator.TONE_PROP_PROMPT,
                     durationMs
                 )
             } catch (e: Exception) {
                 // Sometimes we get an exception in ToneGenerator's constructor. We can afford
-                // ourselves to ignore this
+                // to ignore this
                 Timber.e("beep(): ${e.message}")
             }
         }
