@@ -14,6 +14,7 @@
 package com.liorhass.android.usbterminal.free.screens.logfiles
 
 import android.app.Application
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
@@ -39,6 +40,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.app.ShareCompat
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.liorhass.android.usbterminal.free.R
 import com.liorhass.android.usbterminal.free.main.MainViewModel
 import com.liorhass.android.usbterminal.free.main.UsbTerminalScreenAttributes
@@ -102,15 +105,15 @@ fun LogFilesListTopAppBarActions(mainViewModel: MainViewModel, isTopBarInContext
             }
         }
     } else {
-        IconButton(
-            onClick = { logFilesListViewModel.onRefreshButtonClick() }
-        ) {
-            Icon(
-                modifier = Modifier.padding(start = 0.dp, end = 0.dp),
-                painter = painterResource(id = R.drawable.ic_baseline_refresh_24),
-                contentDescription = stringResource(R.string.refresh),
-            )
-        }
+        // IconButton(
+        //     onClick = { logFilesListViewModel.onRefreshRequested() }
+        // ) {
+        //     Icon(
+        //         modifier = Modifier.padding(start = 0.dp, end = 0.dp),
+        //         painter = painterResource(id = R.drawable.ic_baseline_refresh_24),
+        //         contentDescription = stringResource(R.string.refresh),
+        //     )
+        // }
         IconButton(
             onClick = { logFilesListViewModel.onToggleSortOrderClick() }
         ) {
@@ -149,17 +152,22 @@ fun LogFilesListScreen(
         }
     }
 
-    if (fileNamesList.isEmpty()) {
-        EmptyLogFilesListMessage()
-    } else {
-        LogFilesList(
-            fileNamesList = fileNamesList,
-            onItemClick = viewModel::onLogFilesListItemClick,
-            shouldDisplayDeleteConfirmationDialog = shouldDisplayDeleteConfirmationDialog,
-            nSelected = nSelected,
-            onDeleteConfirmationDialogDismissed = viewModel::onDeleteConfirmationDialogDismissed,
-            onDeleteConfirmed = viewModel::onDeleteConfirmed
-        )
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(viewModel.listIsRefreshing.value),
+        onRefresh = { viewModel.onRefreshRequested() },
+    ) {
+        if (fileNamesList.isEmpty()) {
+            EmptyLogFilesListMessage()
+        } else {
+            LogFilesList(
+                fileNamesList = fileNamesList,
+                onItemClick = viewModel::onLogFilesListItemClick,
+                shouldDisplayDeleteConfirmationDialog = shouldDisplayDeleteConfirmationDialog,
+                nSelected = nSelected,
+                onDeleteConfirmationDialogDismissed = viewModel::onDeleteConfirmationDialogDismissed,
+                onDeleteConfirmed = viewModel::onDeleteConfirmed
+            )
+        }
     }
 
     // When there are selections, a click on the system's back button should not
@@ -186,7 +194,13 @@ fun LogFilesListScreen(
                     val myIntent = Intent(Intent.ACTION_VIEW)
                     myIntent.setDataAndType(uri, "text/plain")
                     myIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION /*or Intent.FLAG_GRANT_WRITE_URI_PERMISSION*/)
-                    startActivity(activity, myIntent, null)
+                    try {
+                        startActivity(activity, myIntent, null)
+                    } catch (e: ActivityNotFoundException) {
+                        Timber.e("No app that can display text/plain")
+                    } catch (e: Exception) {
+                        Timber.e("Can't start activity to display:'${uri}'. Exception: ${e.message}")
+                    }
                 }
                 viewModel.fileViewed()
             }
@@ -367,6 +381,12 @@ private fun EmptyLogFilesListMessage() {
             text = stringResource(R.string.no_log_file),
             textAlign = TextAlign.Center,
             style = MaterialTheme.typography.h6
+        )
+        Spacer(modifier = Modifier.height(30.dp))
+        Text(
+            text = stringResource(R.string.log_files_how_to),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.body1
         )
     }
 }

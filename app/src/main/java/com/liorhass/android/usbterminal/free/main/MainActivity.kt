@@ -12,20 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Update signing from APK to AAB with Play App Signing:
-//    https://developer.android.com/studio/publish/app-signing#sign_release
-//    https://stackoverflow.com/a/57195757/1071117
-// Java (and keytool etc) is at "/Program Files/Android/Android Studio/jre/bin"
 
-
-// todo: Support Android 11 (API 30): https://proandroiddev.com/the-quick-developers-guide-to-migrate-their-apps-to-android-11-e4ca2b011176
-// todo: Support Android 12 (API 31): https://medium.com/tech-takeaways/migrating-my-app-to-android-12-7bafba3ed999
-//
-// todo: Support viewing of log files by implicit intent with FileProvider. See:
-//       https://stackoverflow.com/questions/48725388/unable-to-open-trivial-text-file-with-fileprovider
-//       https://developer.android.com/training/basics/intents/sending
-//       https://developer.android.com/training/secure-file-sharing/setup-sharing#DefineMetaData
-//
 // todo: Color-picker in settings for screen background and text colors (per theme)
 
 // Debug over WiFi (Android 10 and lower): https://developer.android.com/studio/command-line/adb#wireless

@@ -135,12 +135,12 @@ fun UsbTerminalTheme(
     val systemUiController = rememberSystemUiController() // https://google.github.io/accompanist/systemuicontroller/
     if (isDarkTheme) {
         systemUiController.setStatusBarColor(  // setSystemBarsColor(
-            color = colors.primary,
-            darkIcons = true
+            color = colors.primaryVariant,
+            // darkIcons = true
         )
     } else {
         systemUiController.setStatusBarColor(  // setSystemBarsColor(
-            color = colors.primary,
+            color = colors.primaryVariant,
         )
     }
 

@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId "com.liorhass.android.usbterminal.free"
         versionCode 204
-        versionName "2.0.4"
+        versionName "2.0.15"
         minSdkVersion 25
         targetSdkVersion 31
 
@@ -110,12 +110,12 @@ dependencies {
     implementation("androidx.datastore:datastore:1.0.0")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
-    // For Jetpack Compose Permissions  https://google.github.io/accompanist/permissions/
-    // implementation "com.google.accompanist:accompanist-permissions:0.24.1-alpha"
-
     // For latest versions see: https://search.maven.org/search?q=g:com.google.accompanist
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.24.4-alpha"
-    implementation "com.google.accompanist:accompanist-webview:0.24.4-alpha"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.24.9-beta"
+    implementation "com.google.accompanist:accompanist-webview:0.24.9-beta"
+
+    // For swipe-to-refresh
+    implementation "com.google.accompanist:accompanist-swiperefresh:0.24.9-beta"
 
     // For Tabs in settings screens
     implementation "com.google.accompanist:accompanist-pager:0.24.4-alpha"

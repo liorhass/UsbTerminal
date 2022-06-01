@@ -16,6 +16,7 @@ package com.liorhass.android.usbterminal.free.screens.logfiles
 import android.app.Application
 import android.net.Uri
 import androidx.annotation.StringRes
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -69,6 +70,9 @@ class LogFilesListViewModel(
         deleteSelectedFiles()
         shouldDisplayDeleteConfirmationDialog = false
     }
+
+    private val _listIsRefreshing = mutableStateOf(false)
+    val listIsRefreshing: State<Boolean> = _listIsRefreshing
 
     private val _shouldViewFile = MutableStateFlow(Uri.EMPTY)
     val shouldViewFile = _shouldViewFile.asStateFlow()
@@ -188,9 +192,11 @@ class LogFilesListViewModel(
         }
     }
 
-    fun onRefreshButtonClick() {
+    fun onRefreshRequested() {
         Timber.d("onRefreshButtonClick()")
+        _listIsRefreshing.value = true
         _filesList.value = getFilesListFromDisk()
+        _listIsRefreshing.value = false
     }
 
     fun onDeleteButtonClick() {
