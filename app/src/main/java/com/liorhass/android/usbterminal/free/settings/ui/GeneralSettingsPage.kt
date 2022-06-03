@@ -16,24 +16,27 @@ package com.liorhass.android.usbterminal.free.settings.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import com.liorhass.android.usbterminal.free.R
 import com.liorhass.android.usbterminal.free.main.MainViewModel
 import com.liorhass.android.usbterminal.free.settings.model.SettingsRepository
 import com.liorhass.android.usbterminal.free.settings.ui.lib.SettingsFreeText
 import com.liorhass.android.usbterminal.free.settings.ui.lib.SettingsSingleChoice
 import com.liorhass.android.usbterminal.free.settings.ui.lib.SettingsSwitch
+import com.liorhass.android.usbterminal.free.ui.util.GeneralDialog
 
 @Composable
 fun GeneralSettingsPage(
@@ -99,19 +102,50 @@ fun GeneralSettingsPage(
             mainViewModel.settingsRepository.setMarkLoggedOutgoingData(checked)
         }
 
-        // Max number of bytes to retain in back-scroll buffer
-        SettingsFreeText(
-            title = {Text(text=stringResource(R.string.max_bytes_to_retain_for_back_scroll))},
+        // Work Also In Background
+        var shouldDisplayWorkInBGDialog by remember { mutableStateOf(false) }
+        SettingsSwitch(
+            title = {Text(text=stringResource(R.string.work_also_in_the_background))},
             icon = {Icon(
-                painterResource(R.drawable.ic_baseline_format_align_justify_24),
-                contentDescription = stringResource(R.string.max_bytes_to_retain_for_back_scroll),
+                painterResource(R.drawable.ic_baseline_content_copy_24),
+                contentDescription = stringResource(R.string.work_also_in_the_background),
             )},
-            label = {Text(text=stringResource(R.string.max_bytes_to_retain))},
-            previousText = settingsData.maxBytesToRetainForBackScroll.toString(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword, imeAction = ImeAction.Done),
-        ) { maxBytesToRetainStr ->
-            val maxBytesToRetain = maxBytesToRetainStr.toIntOrNull() ?: 100_000
-            mainViewModel.settingsRepository.setMaxBytesToRetainForBackScroll(maxBytesToRetain)
+            checked = settingsData.workAlsoInBackground
+        ) { checked ->
+            if (checked) {
+                shouldDisplayWorkInBGDialog = true
+            } else {
+                mainViewModel.settingsRepository.setWorkAlsoInBackground(false)
+            }
+        }
+        if (shouldDisplayWorkInBGDialog) {
+            GeneralDialog(
+                titleText = stringResource(R.string.work_also_in_the_background),
+                onPositiveText = stringResource(R.string.ok),
+                onPositiveClick = {
+                    shouldDisplayWorkInBGDialog = false
+                    mainViewModel.settingsRepository.setWorkAlsoInBackground(true)
+                },
+                onDismissText = stringResource(R.string.cancel_all_caps),
+                onDismissClick = { shouldDisplayWorkInBGDialog = false }
+            ) {
+                Text(
+                    modifier = Modifier.padding(20.dp),
+                    text = stringResource(R.string.work_also_in_the_background_explanation),
+                )
+            }
+        }
+
+        // Connect to USB device when started
+        SettingsSwitch(
+            title = {Text(text= stringResource(R.string.connect_to_usb_device_on_start))},
+            icon = {Icon(
+                painterResource(R.drawable.ic_baseline_compare_arrows_24),
+                contentDescription = stringResource(R.string.connect_to_usb_device_on_start),
+            )},
+            checked = settingsData.connectToDeviceOnStart
+        ) { checked ->
+            mainViewModel.settingsRepository.setConnectToDeviceOnStart(checked)
         }
 
         // Email address(s) for sharing

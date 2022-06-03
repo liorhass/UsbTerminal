@@ -91,13 +91,12 @@ fun ColumnScope.TerminalScreenTextSection(
         if (isKeyboardOpen && atBottomBeforeKBWasOpened) {
            lazyListState.scrollToItem(lines.value.lastIndex)
         }
-        onKeyboardStateChange()
+        onKeyboardStateChange() // This calls mainViewModel.remeasureScreenDimensions()
     }
-    if (shouldScrollToBottom.value) {
-        LaunchedEffect(lines.value.size) {
-            lazyListState.scrollToItem(lines.value.lastIndex)
-            delay(100)
-            lazyListState.scrollToItem(lines.value.lastIndex)
+    LaunchedEffect(key1 = shouldScrollToBottom.value) {
+        if (shouldScrollToBottom.value) {
+            lazyListState.scrollToItem(lazyListState.layoutInfo.totalItemsCount - 1)
+            // lazyListState.scrollToItem(lines.value.lastIndex)
             onScrolledToBottom()
         }
     }

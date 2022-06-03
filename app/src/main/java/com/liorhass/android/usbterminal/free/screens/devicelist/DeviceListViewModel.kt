@@ -96,7 +96,7 @@ class DeviceListViewModel(application: Application, private val mainViewModel: M
         ViewModelProvider.Factory {
 
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             return DeviceListViewModel(application, mainViewModel) as T
         }
     }

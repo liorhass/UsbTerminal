@@ -114,7 +114,7 @@ class MainViewModel(
     private val _shouldMeasureScreenDimensions = mutableStateOf(uid)
     val shouldMeasureScreenDimensions: State<Int> = _shouldMeasureScreenDimensions
     fun onScreenDimensionsMeasured(screenDimensions: ScreenDimensions) {
-        // Timber.d("onScreenDimensionsMeasured(): width=${screenDimensions.width} height=${screenDimensions.height}")
+        // Timber.d("onScreenDimensionsMeasured(): width=(n=${screenDimensions.width} c=${_screenDimensions.value.width}) height=(n=${screenDimensions.height} c=${_screenDimensions.value.height})")
         _shouldMeasureScreenDimensions.value = 0
         if (screenDimensions != _screenDimensions.value) {
             val shouldRedrawScreen = screenDimensions.width != _screenDimensions.value.width
@@ -174,7 +174,8 @@ class MainViewModel(
     private var nextByteToProcessInIOPacketsList = IOPacketsList.DataPointer(0, 0)
     private val nextByteToProcessInIOPacketsListMutex = Mutex()
 
-    private var usbDeviceFromIntent: UsbDevice? = null
+    private var usbDeviceToConnectOnStartup: UsbDevice? = null
+    private var alreadyTriedToConnectToDeviceOnStartup = false
 
     val userInputHandler = UserInputHandler(settingsRepository, viewModelScope)
 
@@ -195,8 +196,8 @@ class MainViewModel(
             // should be avoided, so we move it here to the background just in case.
             usbCommService?.becomeBackgroundService()
 
-            usbDeviceFromIntent?.let {
-                connectToUsbPort(it, portNumber = 0, deviceType = UsbSerialDevice.DeviceType.AUTO_DETECT)
+            usbDeviceToConnectOnStartup?.let { usbDevice ->
+                connectToUsbPort(usbDevice, portNumber = 0, deviceType = UsbSerialDevice.DeviceType.AUTO_DETECT)
             }
         }
 
@@ -204,7 +205,7 @@ class MainViewModel(
             Timber.d("serviceConnection.onServiceDisconnected() $arg0") //todo:2brm
             userInputHandler.usbCommService = null
             usbCommService = null
-            usbDeviceFromIntent = null
+            usbDeviceToConnectOnStartup = null
         }
     }
 
@@ -258,10 +259,6 @@ class MainViewModel(
     init {
         // Timber.d("init(): intent.action=${initialIntent.action}")
 
-        // Initialize the USB device list with whatever ports are currently attached to our device
-        _portListState.value = getSerialPortList(application)
-        // _portListState.value = getDummySerialPortList()
-
         // Register a broadcast receiver to be notified of USB device attach/detach events
         val intentFilter = IntentFilter().apply {
             addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED)
@@ -269,16 +266,20 @@ class MainViewModel(
         }
         application.registerReceiver(usbAttachedOrDetachedBroadcastReceiver, intentFilter)
 
+        // Initialize the USB device list with whatever ports are currently attached to our device
+        _portListState.value = getSerialPortList(application)
+        // _portListState.value = getDummySerialPortList()
+
         // If the activity was launched due to a USB device being connected to our device
         // (phone/tablet), we'll get that USB device in the intent. In that case we'll try
-        // to connect to it after the service starts and we bind to it
+        // to connect to it in onServiceConnected() after the service starts and we bind to it
         if (initialIntent.action == UsbManager.ACTION_USB_DEVICE_ATTACHED) {
-            usbDeviceFromIntent = initialIntent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
+            usbDeviceToConnectOnStartup = initialIntent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
         }
 
-
+        // Start the USB communication service
         Intent(getApplication(), UsbCommService::class.java).also { intent ->
-            // Start our communication service (we explicitly start before bind so it will stay alive when we unbind)
+            // We explicitly start before bind so it will stay alive when we unbind
             application.startService(intent)
 
             // Bind to our communication service. As the service starts and stops,
@@ -324,8 +325,9 @@ class MainViewModel(
         usbCommService?.becomeBackgroundService()
     }
     fun onActivityStop() {
-        if (settingsData.workAlsoInBackground) {
-            usbCommService?.becomeForegroundService()
+        if (settingsData.workAlsoInBackground &&
+            _usbConnectionState.value.statusCode == UsbSerialPort.ConnectStatusCode.CONNECTED) {
+                usbCommService?.becomeForegroundService()
         }
     }
 
@@ -334,6 +336,7 @@ class MainViewModel(
      * by the service to the observer [communicationServiceObserver]
      */
     fun connectToUsbPort(usbDevice: UsbDevice, portNumber: Int, deviceType: UsbSerialDevice.DeviceType) {
+        Timber.d("connectToUsbPort(): usbDevice=${usbDevice.deviceName} portNumber=$portNumber deviceType=${deviceType.name}")
         val serialParams = UsbSerialPort.SerialCommunicationParams(
             baudRate = settingsData.baudRate,
             dataBits = settingsData.dataBits,
@@ -623,6 +626,7 @@ class MainViewModel(
 
         if (newSettingsData.showCtrlButtonsRow != oldSettingsData.showCtrlButtonsRow) {
             _ctrlButtonsRowVisible.value = newSettingsData.showCtrlButtonsRow
+            remeasureScreenDimensions()
         }
 
         if (newSettingsData.maxBytesToRetainForBackScroll != oldSettingsData.maxBytesToRetainForBackScroll) {
@@ -643,6 +647,35 @@ class MainViewModel(
 
         if (newSettingsData.silentlyDropUnrecognizedCtrlChars != oldSettingsData.silentlyDropUnrecognizedCtrlChars) {
             screenTextModel.silentlyDropUnrecognizedCtrlChars = newSettingsData.silentlyDropUnrecognizedCtrlChars
+        }
+
+        if (settingsData.connectToDeviceOnStart && !alreadyTriedToConnectToDeviceOnStartup) {
+            tryToConnectToFirstDevice()
+        }
+        // This is outside the above if() because we should try to connect only on startup and
+        // not whenever this settings flag becomes true
+        alreadyTriedToConnectToDeviceOnStartup = true
+    }
+
+    private fun tryToConnectToFirstDevice() {
+        val usbSerialPort = _portListState.value.firstOrNull() ?: return
+        val portDeviceType = usbSerialPort.usbSerialDevice.deviceType
+        Timber.d("tryToConnectToFirstDevice(): deviceType=${portDeviceType.name} port#=${usbSerialPort.portNumber}")
+        if (usbCommService == null) {
+            // We didn't connect to the service yet. We set usbDeviceToConnectOnStartup, and
+            // after the service is started we'll try to connect to it
+            if (usbDeviceToConnectOnStartup == null) {
+                // If usbDeviceToConnectOnStartup is already set, it means that it was received
+                // in the Intent that started the app. This has priority over trying to connect
+                // to the first device found.
+                usbDeviceToConnectOnStartup = usbSerialPort.usbSerialDevice.usbDevice
+            }
+        } else {
+            connectToUsbPort(
+                usbSerialPort.usbSerialDevice.usbDevice,
+                usbSerialPort.portNumber,
+                portDeviceType,
+            )
         }
     }
 

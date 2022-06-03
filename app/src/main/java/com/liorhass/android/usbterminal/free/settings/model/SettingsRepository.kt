@@ -50,6 +50,7 @@ class SettingsRepository private constructor(private val context: Context) {
         val logSessionDataToFile: Boolean = DefaultValues.logSessionDataToFile,
         val alsoLogOutgoingData: Boolean = DefaultValues.alsoLogOutgoingData,
         val markLoggedOutgoingData: Boolean = DefaultValues.markLoggedOutgoingData,
+        val connectToDeviceOnStart: Boolean = DefaultValues.connectToDeviceOnStart,
         val emailAddressForSharing: String = DefaultValues.emailAddressForSharing, // Comma-separated list of email addresses
         val workAlsoInBackground: Boolean = DefaultValues.workAlsoInBackground,
         val maxBytesToRetainForBackScroll: Int = DefaultValues.maxBytesToRetainForBackScroll,
@@ -87,6 +88,7 @@ class SettingsRepository private constructor(private val context: Context) {
         const val logSessionDataToFile = false
         const val alsoLogOutgoingData = false
         const val markLoggedOutgoingData = true
+        const val connectToDeviceOnStart = true
         const val emailAddressForSharing= "" // Comma-separated list of email addresses
         const val workAlsoInBackground = true
         const val maxBytesToRetainForBackScroll = 100_000
@@ -136,6 +138,7 @@ class SettingsRepository private constructor(private val context: Context) {
         val LOG_SESSION_DATA_TO_FILE_KEY = booleanPreferencesKey("logToFile")
         val ALSO_LOG_OUTGOING_DATA_KEY = booleanPreferencesKey("logOutgoing")
         val MARK_LOGGED_OUTGOING_DATA_KEY = booleanPreferencesKey("markOutgoing")
+        val CONNECT_TO_DEVICE_ON_START_KEY = booleanPreferencesKey("cos")
         val EMAIL_ADDR_FOR_SHARING_KEY = stringPreferencesKey("eafs")
         val WORK_ALSO_IN_BACKGROUND_KEY = booleanPreferencesKey("bg")
         val LOG_FILES_SORT_KEY = intPreferencesKey("logFilesSort")
@@ -153,6 +156,7 @@ class SettingsRepository private constructor(private val context: Context) {
             logSessionDataToFile = preferences[SettingsKeys.LOG_SESSION_DATA_TO_FILE_KEY] ?: DefaultValues.logSessionDataToFile,
             alsoLogOutgoingData = preferences[SettingsKeys.ALSO_LOG_OUTGOING_DATA_KEY] ?: DefaultValues.alsoLogOutgoingData,
             markLoggedOutgoingData = preferences[SettingsKeys.MARK_LOGGED_OUTGOING_DATA_KEY] ?: DefaultValues.markLoggedOutgoingData,
+            connectToDeviceOnStart = preferences[SettingsKeys.CONNECT_TO_DEVICE_ON_START_KEY] ?: DefaultValues.connectToDeviceOnStart,
             emailAddressForSharing = preferences[SettingsKeys.EMAIL_ADDR_FOR_SHARING_KEY] ?: DefaultValues.emailAddressForSharing,
             workAlsoInBackground = preferences[SettingsKeys.WORK_ALSO_IN_BACKGROUND_KEY] ?: DefaultValues.workAlsoInBackground,
             maxBytesToRetainForBackScroll = preferences[SettingsKeys.MAX_BYTES_TO_RETAIN_FOR_BACK_SCROLL_KEY] ?: DefaultValues.maxBytesToRetainForBackScroll,
@@ -309,6 +313,7 @@ class SettingsRepository private constructor(private val context: Context) {
     fun setLogSessionDataToFile(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.LOG_SESSION_DATA_TO_FILE_KEY, newValue) }
     fun setAlsoLogOutgoingData(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.ALSO_LOG_OUTGOING_DATA_KEY, newValue) }
     fun setMarkLoggedOutgoingData(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.MARK_LOGGED_OUTGOING_DATA_KEY, newValue) }
+    fun setConnectToDeviceOnStart(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.CONNECT_TO_DEVICE_ON_START_KEY, newValue) }
     fun setEmailAddressForSharing(emailAddr: String) { updateSettingsDataStore(SettingsKeys.EMAIL_ADDR_FOR_SHARING_KEY, emailAddr) }
     fun setWorkAlsoInBackground(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.WORK_ALSO_IN_BACKGROUND_KEY, newValue) }
     fun setLogFilesSortingOrder(sortingOrder: Int) { updateSettingsDataStore(SettingsKeys.LOG_FILES_SORT_KEY, sortingOrder) }

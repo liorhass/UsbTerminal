@@ -107,6 +107,7 @@
     <string name="dark">Dark</string>
     <string name="same_as_system">Same as system</string>
     <string name="log_session_data_to_file">Log session data to file</string>
+    <string name="connect_to_usb_device_on_start">Connect to USB device on start</string>
     <string name="also_log_outgoing_data">Also log outgoing data</string>
     <string name="mark_logged_outgoing_data">Mark logged outgoing data</string>
     <string name="max_bytes_to_retain_for_back_scroll">Max bytes to retain (for back-scroll)</string>

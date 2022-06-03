@@ -51,7 +51,8 @@ class UsbCommService : Service() {
     private val defaultScope = CoroutineScope(Dispatchers.Default + job)
     lateinit var settingsRepository: SettingsRepository
     private var settingsData = SettingsRepository.SettingsData()
-    private var stopping = false
+    private var isStopping = false
+    private var isForeground = false
 
     private lateinit var usbManager: UsbManager
 
@@ -158,8 +159,8 @@ class UsbCommService : Service() {
 
     // From https://stackoverflow.com/a/47549638/1071117
     fun becomeForegroundService() {
-        if (stopping) return
-        // Timber.d("becomeForeground()")
+        Timber.d("becomeForegroundService(): isStopping=$isStopping")
+        if (isStopping) return
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel()
         }
@@ -186,11 +187,15 @@ class UsbCommService : Service() {
             .addAction(R.drawable.ic_baseline_clear_24, getString(R.string.stop_all_caps), stopServicePendingIntent)
             .build()
         startForeground(FOREGROUND_SERVICE_NOTIFICATION_ID, notification)
+        isForeground = true
     }
 
     fun becomeBackgroundService() {
-        // Timber.d("becomeBackground()")
-        stopForeground(STOP_FOREGROUND_REMOVE)
+        Timber.d("becomeBackgroundService(): isForeground=$isForeground")
+        if (isForeground) {
+            stopForeground(STOP_FOREGROUND_REMOVE)
+            isForeground = false
+        }
     }
 
     /**
@@ -382,7 +387,7 @@ class UsbCommService : Service() {
     }
 
     fun stop() {
-        stopping = true
+        isStopping = true
         stopSelf()
     }
 

@@ -122,6 +122,7 @@ fun TerminalScreen(
         }
         Divider(color = UsbTerminalTheme.extendedColors.statusLineDividerColor, thickness = 1.dp)
         StatusLine(usbConnectionState, screenDimensions, cursorPosition, displayType)
+
         if (shouldShowWelcomeMsg) {
             WelcomeMsgDialog(
                 mainViewModel::onUserAcceptedWelcomeOrUpgradeMsg,
