@@ -38,6 +38,8 @@ import kotlinx.coroutines.launch
 fun ColumnScope.TerminalScreenHexSection(
     textBlocks: State<Array<ScreenHexModel.HexTextBlock>>,
     shouldScrollToBottom: State<Boolean>,
+    shouldReportIfAtBottom: Boolean,
+    onReportIfAtBottom: (Boolean) -> Unit,
     onScrolledToBottom: () -> Unit,
     fontSize: Int,
     mainFocusRequester: FocusRequester,
@@ -48,6 +50,13 @@ fun ColumnScope.TerminalScreenHexSection(
     val lazyListState = rememberLazyListState()
     val isKeyboardOpen by isKeyboardOpenAsState()
     var atBottomBeforeKBWasOpened by remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = shouldReportIfAtBottom) {
+        if (shouldReportIfAtBottom) {
+            onReportIfAtBottom(
+                lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == lazyListState.layoutInfo.totalItemsCount - 1
+            )
+        }
+    }
 
     // Used to prevent ripple effect when clicked. https://stackoverflow.com/a/66703893/1071117
     val interactionSource = remember { MutableInteractionSource() }

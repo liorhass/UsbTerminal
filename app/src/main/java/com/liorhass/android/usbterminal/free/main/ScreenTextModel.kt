@@ -106,6 +106,53 @@ class ScreenTextModel(
         const val TOTAL_SIZE_TRIMMING_HYSTERESIS = 1000
     }
 
+    /** Cursor position. `line` and `column` start at 1. For displaying at the status-line */
+    data class DisplayedCursorPosition(val line: Int, val column: Int)
+
+    private var uid: Int = 1
+        get() { field++; return field }
+
+    data class ScreenState(
+        val lines: Array<ScreenLine>,
+        val displayedCursorPosition: DisplayedCursorPosition,
+        val shouldScrollToBottom: Int, // For an explanation why this is Int and not Boolean see mainViewModel.shouldMeasureScreenDimensions
+    ) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as ScreenState
+
+            if (!(lines === other.lines)) return false
+            if (displayedCursorPosition != other.displayedCursorPosition) return false
+            if (shouldScrollToBottom != other.shouldScrollToBottom) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = lines.contentHashCode()
+            result = 31 * result + displayedCursorPosition.hashCode()
+            result = 31 * result + shouldScrollToBottom.hashCode()
+            return result
+        }
+    }
+
+    private val _screenState = mutableStateOf(ScreenState(
+        lines = emptyArray(),
+        displayedCursorPosition = DisplayedCursorPosition(0, 0),
+        shouldScrollToBottom = 0,
+    ))
+    val screenState: State<ScreenState> = _screenState
+    fun shouldScrollToBottom() {
+        _screenState.value = _screenState.value.copy(shouldScrollToBottom = uid)
+    }
+    fun onScrolledToBottom(uid: Int) {
+        if (uid == _screenState.value.shouldScrollToBottom) {
+            _screenState.value = _screenState.value.copy(shouldScrollToBottom = 0)
+        }
+    }
+
     /**
      * The main content of the terminal screen. Internally we hold the screen content
      * on a `mutableListOf<ScreenLine>`. For the UI composables, we expose a
@@ -116,20 +163,9 @@ class ScreenTextModel(
      * performance were awful.
      */
     private val screenLines = mutableListOf<ScreenLine>()
-    private val _screenLinesState = mutableStateOf<Array<ScreenLine>>(emptyArray())
-    val screenLinesState: State<Array<ScreenLine>> = _screenLinesState
+    // private val _screenLinesState = mutableStateOf<Array<ScreenLine>>(emptyArray())
+    // val screenLinesState: State<Array<ScreenLine>> = _screenLinesState
     private var totalCharCount = 0
-
-    /** Cursor position. `line` and `column` start at 1. For displaying at the status-line */
-    data class DisplayedCursorPosition(val line: Int, val column: Int)
-    private val _displayedCursorPosition = mutableStateOf(DisplayedCursorPosition(0, 0))
-    val displayedCursorPosition: State<DisplayedCursorPosition> = _displayedCursorPosition
-
-    private val _shouldScrollToBottom = mutableStateOf(false)
-    val shouldScrollToBottom: State<Boolean> = _shouldScrollToBottom
-    fun onScrolledToBottom() {
-        _shouldScrollToBottom.value = false
-    }
 
     // These are set by MainViewModel whenever settings are changed
     var soundOn = SettingsRepository.DefaultValues.soundOn
@@ -140,6 +176,7 @@ class ScreenTextModel(
         }
 
     private val uiUpdateTriggered = AtomicBoolean(false)
+    private val missedScrollToBottom = AtomicBoolean(false)
     private var screenHeight = 0 // Number of lines that fit in the screen (visible lines)
     private val currentGraphicRendition = mutableListOf<Int>()
     private val cursor = Cursor()
@@ -179,7 +216,13 @@ class ScreenTextModel(
                 totalCharCount = 0
                 appendNewLine() // We start with one empty line
                 putCharAtCursorLocation(' ') // One space character to enable cursor drawing
-                _screenLinesState.value = screenLines.toTypedArray()
+                _screenState.value = ScreenState(
+                    lines = screenLines.toTypedArray(),
+                    shouldScrollToBottom = 0,
+                    displayedCursorPosition = DisplayedCursorPosition(
+                        cursor.position.lineIndex + 1,
+                        cursor.position.offsetInLine + 1)
+                )
                 cursor.isBlinking = true
             }
         }
@@ -368,18 +411,21 @@ class ScreenTextModel(
                 delay(40)
                 uiUpdateTriggered.set(false)
                 mutex.withLock {
-                    _screenLinesState.value = screenLines.toTypedArray()
-                    if (alsoScrollToBottomOfScreen) {
-                        _shouldScrollToBottom.value = true
-                    }
-                    if (_displayedCursorPosition.value.line != cursor.position.lineIndex + 1  ||
-                        _displayedCursorPosition.value.column != cursor.position.offsetInLine + 1) {
-                        _displayedCursorPosition.value = DisplayedCursorPosition(
+                    // Timber.d("updateUi(): screenLines.size: ${screenLines.size}  shouldScrollToBottom=${alsoScrollToBottomOfScreen}")
+                    val shouldScrollToBottom = if (alsoScrollToBottomOfScreen || missedScrollToBottom.getAndSet(false)) uid else _screenState.value.shouldScrollToBottom
+                    _screenState.value = ScreenState(
+                        lines = screenLines.toTypedArray(),
+                        shouldScrollToBottom = shouldScrollToBottom,
+                        displayedCursorPosition = DisplayedCursorPosition(
                             cursor.position.lineIndex + 1,
-                            cursor.position.offsetInLine + 1)
-                    }
-                    // Timber.d("updateUi(): screenLinesState.value.size: ${screenLinesState.value.size}  shouldScrollToBottom=${alsoScrollToBottomOfScreen}")
+                            cursor.position.offsetInLine + 1
+                        )
+                    )
                 }
+            }
+        } else {
+            if (alsoScrollToBottomOfScreen) {
+                missedScrollToBottom.set(true)
             }
         }
     }

@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.liorhass.android.usbterminal.free.R
 import com.liorhass.android.usbterminal.free.main.MainViewModel
+import com.liorhass.android.usbterminal.free.main.ScreenTextModel
 import com.liorhass.android.usbterminal.free.main.UsbTerminalScreenAttributes
 import com.liorhass.android.usbterminal.free.settings.model.SettingsRepository
 import com.liorhass.android.usbterminal.free.ui.theme.UsbTerminalTheme
@@ -54,13 +55,18 @@ fun TerminalScreen(
     val settingsData by mainViewModel.settingsRepository.settingsStateFlow.collectAsStateLifecycleAware() //todo: can probably be converted to state (no need for flow)
     val displayType = settingsData.displayType
     val screenDimensions by mainViewModel.screenDimensions
-    val cursorPosition by mainViewModel.cursorPosition
+    val cursorPosition = if (displayType == SettingsRepository.DisplayType.TEXT) {
+        mainViewModel.textScreenState.value.displayedCursorPosition
+    } else {
+        ScreenTextModel.DisplayedCursorPosition(0,0) // This isn't displayed anyway
+    }
     val fontSize = settingsData.fontSize
     val shouldShowWelcomeMsg by mainViewModel.shouldShowWelcomeMsg
 //    val shouldShowWelcomeMsg by remember { mutableStateOf(true) } // For debugging
     val shouldShowUpgradeFromV1Msg by mainViewModel.shouldShowUpgradeFromV1Msg
 //    val shouldShowUpgradeFromV1Msg by remember { mutableStateOf(true) } // For debugging
     val shouldMeasureScreenDimensions by mainViewModel.shouldMeasureScreenDimensions
+    val shouldReportIfAtBottom by mainViewModel.shouldReportIfAtBottom
 
     Column(
         modifier = Modifier
@@ -76,6 +82,8 @@ fun TerminalScreen(
             TerminalScreenHexSection(
                 textBlocks = mainViewModel.screenHexTextBlocksState,
                 shouldScrollToBottom = mainViewModel.screenHexShouldScrollToBottom,
+                shouldReportIfAtBottom = shouldReportIfAtBottom,
+                onReportIfAtBottom = mainViewModel::onReportIfAtBottom,
                 onScrolledToBottom = mainViewModel::onScreenHexScrolledToBottom,
                 fontSize = fontSize,
                 mainFocusRequester = mainFocusRequester,
@@ -84,11 +92,12 @@ fun TerminalScreen(
             )
         } else {
             TerminalScreenTextSection(
-                lines = mainViewModel.screenLines,
+                screenState = mainViewModel.textScreenState,
                 shouldMeasureScreenDimensions = shouldMeasureScreenDimensions,
                 onScreenDimensionsMeasured = mainViewModel::onScreenDimensionsMeasured,
-                shouldScrollToBottom = mainViewModel.screenTextShouldScrollToBottom,
-                onScrolledToBottom = mainViewModel::onScrolledToBottom,
+                shouldReportIfAtBottom = shouldReportIfAtBottom,
+                onReportIfAtBottom = mainViewModel::onReportIfAtBottom,
+                onScrolledToBottom = mainViewModel::onScreenTxtScrolledToBottom,
                 fontSize = fontSize,
                 mainFocusRequester = mainFocusRequester,
                 auxFocusRequester = auxFocusRequester,

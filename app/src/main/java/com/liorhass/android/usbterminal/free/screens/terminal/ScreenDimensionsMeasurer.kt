@@ -63,7 +63,6 @@ fun MeasureScreenDimensions(
             state = listState,
             modifier = Modifier
                 .fillMaxSize()
-                //todo:2brm  .background(Color.Black), // todo: Should be text-screen background color (if it's not always black)
         ) {
             items(100) {
                 TerminalScreenLine(

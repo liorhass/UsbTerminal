@@ -77,25 +77,54 @@ class MainViewModel(
     fun usbPermissionWasRequested() {_shouldRequestUsbPermissionFlow.value = _shouldRequestUsbPermissionFlow.value.copy(shouldRequestPermission = false)}
 
     private val screenTextModel = ScreenTextModel(viewModelScope,80, ::sendBuf, settingsData.maxBytesToRetainForBackScroll)
-    val screenLines = screenTextModel.screenLinesState
-    val screenTextShouldScrollToBottom = screenTextModel.shouldScrollToBottom
-    fun onScrolledToBottom() = screenTextModel.onScrolledToBottom()
-    val cursorPosition = screenTextModel.displayedCursorPosition
+    val textScreenState = screenTextModel.screenState
+    fun onScreenTxtScrolledToBottom(uid: Int) = screenTextModel::onScrolledToBottom
 
     private val screenHexModel = ScreenHexModel(viewModelScope, 10_000)
     val screenHexTextBlocksState = screenHexModel.screenHexTextBlocksState
     val screenHexShouldScrollToBottom = screenHexModel.shouldScrollToBottom
     fun onScreenHexScrolledToBottom() = screenHexModel.onScrolledToBottom()
 
+    // Show/Hide the control buttons row.    Yet another ugly hack:
+    // The required behaviour is this: When showing/hiding the ctrl row, scroll the
+    // screen to the bottom, but only if it was already at the bottom before the
+    // change. So we need to know if the screen was at the bottom when the user
+    // clicked on the show/hide-ctrl button. This can only be done in the UI.
+    // Theoretically we could have make the UI report this state on every change,
+    // however this would constantly waste resources for something which is rarely
+    // used. So the hack is that when the user request to show/hide the ctrl row,
+    // we ask the UI to report whether it's at the bottom, and only when we get
+    // this report we change the flag that determine the viewing state of the
+    // ctrl row.
+    private val _ctrlButtonsRowVisible = mutableStateOf(false)
+    val ctrlButtonsRowVisible: State<Boolean> = _ctrlButtonsRowVisible
+    private val _shouldReportIfAtBottom = mutableStateOf(false)
+    val shouldReportIfAtBottom: State<Boolean> = _shouldReportIfAtBottom
+    fun onReportIfAtBottom(isAtBottom: Boolean) {
+        _shouldReportIfAtBottom.value = false
+        _ctrlButtonsRowVisible.value = settingsData.showCtrlButtonsRow
+        if (isAtBottom) {
+            setShouldScrollToBottom()
+        }
+    }
+
+    private fun setShouldScrollToBottom() {
+        if (settingsData.displayType == SettingsRepository.DisplayType.TEXT) {
+            screenTextModel.shouldScrollToBottom()
+        } else {
+            screenHexModel.setShouldScrollToBottom()
+        }
+    }
+
     data class ScreenDimensions(val width: Int, val height: Int)
     private val _screenDimensions = mutableStateOf(ScreenDimensions(0,0))
     val screenDimensions: State<ScreenDimensions> = _screenDimensions
 
-    private val _ctrlButtonsRowVisible = mutableStateOf(false)
-    val ctrlButtonsRowVisible: State<Boolean> = _ctrlButtonsRowVisible
-
-    // Why is the flag shouldMeasureScreenDimensions an Int and not a Boolean?
-    // Well, if it was a Boolean the following scenario might happen:
+    // Why is the flags shouldMeasureScreenDimensions an Int and not a Boolean?
+    // Well, it's a hack we have to use as a punishment for using a system
+    // designed to represent a state (Jetpack Compose) to instead pass a one-of
+    // commands.
+    // if it was a Boolean the following scenario might happen:
     //  1. A trigger is made to measure the screen, which sets the flag to true
     //  2. As a result recomposition happens and it measures the screen
     //  3. After the screen is measured a call is made to onScreenDimensionsMeasured()
@@ -376,6 +405,7 @@ class MainViewModel(
                     processor = ::processIOBytesIntoDisplayData,
                 ) ?: nextByteToProcessInIOPacketsList
             }
+            setShouldScrollToBottom()
         }
     }
 
@@ -521,17 +551,15 @@ class MainViewModel(
     }
 
     fun onToggleHexTxtButtonClick() {
-        // Timber.d("onToggleHexTxt()")
-        when (settingsData.displayType) {
-            // Changing settings values triggers a call to our onSettingsUpdated() method,
-            // which is in charge of handling them
-            SettingsRepository.DisplayType.TEXT -> {
-                settingsRepository.setDisplayType(SettingsRepository.DisplayType.HEX.value)
+        // Timber.d("onToggleHexTxtButtonClick()")
+        // Changing settings values triggers a call to our onSettingsUpdated() method,
+        // which is in charge of handling them
+        settingsRepository.setDisplayType(
+            when (settingsData.displayType) {
+                SettingsRepository.DisplayType.TEXT -> SettingsRepository.DisplayType.HEX.value
+                else -> SettingsRepository.DisplayType.TEXT.value
             }
-            else -> {
-                settingsRepository.setDisplayType(SettingsRepository.DisplayType.TEXT.value)
-            }
-        }
+        )
     }
 
     fun onToggleShowCtrlButtonsRowButtonClick() {
@@ -625,7 +653,8 @@ class MainViewModel(
         }
 
         if (newSettingsData.showCtrlButtonsRow != oldSettingsData.showCtrlButtonsRow) {
-            _ctrlButtonsRowVisible.value = newSettingsData.showCtrlButtonsRow
+            // _ctrlButtonsRowVisible.value = newSettingsData.showCtrlButtonsRow
+            _shouldReportIfAtBottom.value = true
             remeasureScreenDimensions()
         }
 
@@ -695,12 +724,16 @@ class MainViewModel(
         redrawScreen()
     }
 
+    private var currentlyIsDarkTheme: Boolean? = null
     fun setIsDarkTheme(isDarkTheme: Boolean) {
-        // When the theme changes (Light to Dark or vice versa), we need to redraw the whole
-        // screen from scratch (from data stored at IOPacketsList) because text colors have changed
-        screenTextModel.setIsDarkTheme(isDarkTheme)
-        screenHexModel.setIsDarkTheme(isDarkTheme)
-        redrawScreen()
+        if (isDarkTheme != currentlyIsDarkTheme) {
+            // When the theme changes (Light to Dark or vice versa), we need to redraw the whole
+            // screen from scratch (from data stored at IOPacketsList) because text colors have changed
+            currentlyIsDarkTheme = isDarkTheme
+            screenTextModel.setIsDarkTheme(isDarkTheme)
+            screenHexModel.setIsDarkTheme(isDarkTheme)
+            redrawScreen()
+        }
     }
 
     private fun terminateApp() {

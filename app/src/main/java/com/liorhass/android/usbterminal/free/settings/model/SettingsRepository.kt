@@ -248,7 +248,7 @@ class SettingsRepository private constructor(private val context: Context) {
     /** Expose the settings data as a StateFlow. In composables this should be accessed like: val settingsData by settingsRepository.settingsFlow.collectAsStateLifecycleAware() */
     val settingsStateFlow: StateFlow<SettingsData> = settingsFlow
         .map { mapPreferencesToModel(it) }
-        .onEach { Timber.d("settingsFlow: showedV2WelcomeMsg=${it.showedV2WelcomeMsg} isDefaultValues=${it.isDefaultValues}") }
+        // .onEach { Timber.d("settingsFlow: showedV2WelcomeMsg=${it.showedV2WelcomeMsg} isDefaultValues=${it.isDefaultValues}") }
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.Eagerly, // Eagerly because in some places in the code it's convenient to access directly settingsStateFlow.value without collecting
@@ -328,7 +328,7 @@ class SettingsRepository private constructor(private val context: Context) {
     private fun<T> updateSettingsDataStore(key: Preferences.Key<T>, value: T) {
         coroutineScope.launch {
             context.settingsDataStore.edit { settings ->
-                Timber.d("updateSettingsDataStore(): key=${key.name}")
+                // Timber.d("updateSettingsDataStore(): key=${key.name}")
                 settings[key] = value
             }
         }

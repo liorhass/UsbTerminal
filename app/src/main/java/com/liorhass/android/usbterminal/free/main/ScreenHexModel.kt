@@ -62,6 +62,9 @@ class ScreenHexModel(
 
     private val _shouldScrollToBottom = mutableStateOf(false)
     val shouldScrollToBottom: State<Boolean> = _shouldScrollToBottom
+    fun setShouldScrollToBottom() {
+        _shouldScrollToBottom.value = true
+    }
     fun onScrolledToBottom() {
         _shouldScrollToBottom.value = false
     }

@@ -34,26 +34,38 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.liorhass.android.usbterminal.free.main.MainViewModel
 import com.liorhass.android.usbterminal.free.main.ScreenLine
+import com.liorhass.android.usbterminal.free.main.ScreenTextModel
 import com.liorhass.android.usbterminal.free.ui.theme.DefaultTextColorInTextMode
 import com.liorhass.android.usbterminal.free.ui.util.isKeyboardOpenAsState
-import kotlinx.coroutines.delay
+import timber.log.Timber
 
 @Composable
 fun ColumnScope.TerminalScreenTextSection(
-    lines: State<Array<ScreenLine>>,
+    screenState: State<ScreenTextModel.ScreenState>,
     shouldMeasureScreenDimensions: Int,
     onScreenDimensionsMeasured: (MainViewModel.ScreenDimensions) -> Unit,
-    shouldScrollToBottom: State<Boolean>,
-    onScrolledToBottom: () -> Unit,
+    shouldReportIfAtBottom: Boolean,
+    onReportIfAtBottom: (Boolean) -> Unit,
+    onScrolledToBottom: (Int) -> Unit,
     fontSize: Int,
     mainFocusRequester: FocusRequester,
     auxFocusRequester: FocusRequester,
     onKeyboardStateChange: () -> Unit,
 ) {
+    // Timber.d("TerminalScreenTextSection(): shouldScrollToBottom=${screenState.value.shouldScrollToBottom} lines.size=${screenState.value.lines.size}")
+    val lines = screenState.value.lines
+    val shouldScrollToBottom   = screenState.value.shouldScrollToBottom
     val lazyListState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val isKeyboardOpen by isKeyboardOpenAsState()
     var atBottomBeforeKBWasOpened by remember { mutableStateOf(false) }
+    LaunchedEffect(key1 = shouldReportIfAtBottom) {
+        if (shouldReportIfAtBottom) {
+            onReportIfAtBottom(
+                lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == lazyListState.layoutInfo.totalItemsCount - 1
+            )
+        }
+    }
 
     val interactionSource = remember { MutableInteractionSource() }
     Box(modifier = Modifier
@@ -80,7 +92,7 @@ fun ColumnScope.TerminalScreenTextSection(
                 },
         ) {
             items(
-                items = lines.value,
+                items = lines,
                 key = { line -> line.uid },
             ) { line ->
                 TerminalScreenLine(line, fontSize)
@@ -89,15 +101,15 @@ fun ColumnScope.TerminalScreenTextSection(
     }
     LaunchedEffect(key1 = isKeyboardOpen) {
         if (isKeyboardOpen && atBottomBeforeKBWasOpened) {
-           lazyListState.scrollToItem(lines.value.lastIndex)
+           lazyListState.scrollToItem(lines.lastIndex)
         }
         onKeyboardStateChange() // This calls mainViewModel.remeasureScreenDimensions()
     }
-    LaunchedEffect(key1 = shouldScrollToBottom.value) {
-        if (shouldScrollToBottom.value) {
+    LaunchedEffect(key1 = shouldScrollToBottom) {
+        if (shouldScrollToBottom != 0) {
             lazyListState.scrollToItem(lazyListState.layoutInfo.totalItemsCount - 1)
             // lazyListState.scrollToItem(lines.value.lastIndex)
-            onScrolledToBottom()
+            onScrolledToBottom(shouldScrollToBottom)
         }
     }
 }
