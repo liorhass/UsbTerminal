@@ -78,12 +78,12 @@ class MainViewModel(
 
     private val screenTextModel = ScreenTextModel(viewModelScope,80, ::sendBuf, settingsData.maxBytesToRetainForBackScroll)
     val textScreenState = screenTextModel.screenState
-    fun onScreenTxtScrolledToBottom(uid: Int) = screenTextModel::onScrolledToBottom
+    val onScreenTxtScrolledToBottom = screenTextModel::onScrolledToBottom
 
     private val screenHexModel = ScreenHexModel(viewModelScope, 10_000)
     val screenHexTextBlocksState = screenHexModel.screenHexTextBlocksState
     val screenHexShouldScrollToBottom = screenHexModel.shouldScrollToBottom
-    fun onScreenHexScrolledToBottom() = screenHexModel.onScrolledToBottom()
+    val onScreenHexScrolledToBottom = screenHexModel::onScrolledToBottom
 
     // Show/Hide the control buttons row.    Yet another ugly hack:
     // The required behaviour is this: When showing/hiding the ctrl row, scroll the
@@ -120,42 +120,55 @@ class MainViewModel(
     private val _screenDimensions = mutableStateOf(ScreenDimensions(0,0))
     val screenDimensions: State<ScreenDimensions> = _screenDimensions
 
-    // Why is the flags shouldMeasureScreenDimensions an Int and not a Boolean?
-    // Well, it's a hack we have to use as a punishment for using a system
-    // designed to represent a state (Jetpack Compose) to instead pass a one-of
-    // commands.
-    // if it was a Boolean the following scenario might happen:
-    //  1. A trigger is made to measure the screen, which sets the flag to true
-    //  2. As a result recomposition happens and it measures the screen
-    //  3. After the screen is measured a call is made to onScreenDimensionsMeasured()
-    //     on a LaunchedEffect which reset the flag to false
-    //  4. Before a recomposition happens (due to the flag reset) some other code
-    //     triggers another measurement of the screen, which sets the flag to true again
-    //  5. Finally the UI is ready to recompose, but from Compose's perspective no
-    //     recomposition is needed since the flag never changed (was true and is
-    //     still true).
-    // The solution is to use an Int instead of a Boolean. 0 marks that no measurement
-    // is needed, and when a measurement is needed the flag is set to some unique
-    // Int (different every time). The composition makes (totally dummy) use of this Int
-    // which triggers a recomposition even when the flag's reset is missed.
+    // Measure screen dimensions
+    // This is a bit tricky because Compose is designed for the UI to simply display a
+    // snapshot of a state. There is no mechanism to issue a one-of commands from a
+    // ViewModel to Compose that would be executed reliably. However some things like
+    // screen-measurement can only be done by the UI, so we have to use ugly hacks
+    // like this:
+    // Screen-dimensions measurement is done in the composable function TerminalScreenTextSection
+    // which is responsible for the text section of the terminal. The screen dimensions are
+    // affected by screen size and font size, but also by components that are external to
+    // this functions, such as whether the control-buttons row is visible or not. When such
+    // a component is changed, we trigger a new screen-measurement by setting a flag.
+    // If this flag was a simple boolean it would be possible for the measurement to take place
+    // before the affecting component was changed (e.g. showed or hidden), thus giving a
+    // wrong measurement.
+    // To overcome this we use a three-state flag. When a measurement is triggered we set
+    // this flag to indicate that a measurement is needed, but only after the next composition.
+    // In the next composition we set the flag to indicate that now it's ok to take the
+    // measurement.
+    // Each command is accompanied by a uid in order to be able to force recomposition when
+    // no UI component has changed.
     private var uid: Int = 1
         get() { field++; return field }
-    private val _shouldMeasureScreenDimensions = mutableStateOf(uid)
-    val shouldMeasureScreenDimensions: State<Int> = _shouldMeasureScreenDimensions
-    fun onScreenDimensionsMeasured(screenDimensions: ScreenDimensions) {
-        // Timber.d("onScreenDimensionsMeasured(): width=(n=${screenDimensions.width} c=${_screenDimensions.value.width}) height=(n=${screenDimensions.height} c=${_screenDimensions.value.height})")
-        _shouldMeasureScreenDimensions.value = 0
-        if (screenDimensions != _screenDimensions.value) {
-            val shouldRedrawScreen = screenDimensions.width != _screenDimensions.value.width
-            _screenDimensions.value = screenDimensions
-            screenTextModel.setScreenDimensions(screenDimensions.width, screenDimensions.height)
-            if (shouldRedrawScreen) {
-                redrawScreen()
+    enum class ScreenMeasurementCommand { NOOP, SHOULD_MEASURE_AFTER_NEXT_COMPOSITION, SHOULD_MEASURE }
+    data class ShouldMeasureScreenDimensionsCmd(val cmd: ScreenMeasurementCommand, val uid: Int)
+    private val _shouldMeasureScreenDimensions = mutableStateOf(ShouldMeasureScreenDimensionsCmd(ScreenMeasurementCommand.SHOULD_MEASURE_AFTER_NEXT_COMPOSITION, uid))
+    val shouldMeasureScreenDimensions: State<ShouldMeasureScreenDimensionsCmd> = _shouldMeasureScreenDimensions
+    fun onScreenDimensionsMeasured(screenDimensions: ScreenDimensions, measurementTriggeringCommand: ScreenMeasurementCommand) {
+        // Timber.d("onScreenDimensionsMeasured(): triggered_by=${measurementTriggeringCommand.name}  width=(n=${screenDimensions.width} c=${_screenDimensions.value.width}) height=(n=${screenDimensions.height} c=${_screenDimensions.value.height})")
+        when (measurementTriggeringCommand) {
+            ScreenMeasurementCommand.SHOULD_MEASURE_AFTER_NEXT_COMPOSITION -> {
+                // Trigger a recomposition that will do the actual measurement
+                _shouldMeasureScreenDimensions.value = ShouldMeasureScreenDimensionsCmd(ScreenMeasurementCommand.SHOULD_MEASURE, uid)
             }
+            ScreenMeasurementCommand.SHOULD_MEASURE -> {
+                if (screenDimensions != _screenDimensions.value) {
+                    val shouldRedrawScreen = screenDimensions.width != _screenDimensions.value.width
+                    _screenDimensions.value = screenDimensions
+                    screenTextModel.setScreenDimensions(screenDimensions.width, screenDimensions.height)
+                    if (shouldRedrawScreen) {
+                        redrawScreen()
+                    }
+                }
+                _shouldMeasureScreenDimensions.value = ShouldMeasureScreenDimensionsCmd(ScreenMeasurementCommand.NOOP, uid)
+            }
+            else -> {}
         }
     }
     fun remeasureScreenDimensions() {
-        _shouldMeasureScreenDimensions.value = uid
+        _shouldMeasureScreenDimensions.value = ShouldMeasureScreenDimensionsCmd(ScreenMeasurementCommand.SHOULD_MEASURE_AFTER_NEXT_COMPOSITION, uid)
     }
 
     // A flow that signals MainActivity to finish when it becomes true
@@ -239,9 +252,9 @@ class MainViewModel(
     }
 
     /** Observer where the communication service notifies us about events (e.g. usb-connection-established) */
-    private val communicationServiceObserver = Observer { o, arg ->
+    private val communicationServiceObserver = Observer { _, arg ->
         val event = arg as UsbCommService.Event
-        Timber.d("communicationServiceObserver: type=${event.eventType.name}  current thrd: ${Thread.currentThread()}") //todo:2brm
+        Timber.d("communicationServiceObserver: type=${event.eventType.name}  current thread: ${Thread.currentThread()}") //todo:2brm
         when (event.eventType) {
             UsbCommService.Event.Type.CONNECTED -> onUsbConnected(event.obj as UsbCommService.Event.UsbConnectionParams)
             UsbCommService.Event.Type.DISCONNECTED -> onUsbDisconnected(event.obj as UsbCommService.Event.UsbDisconnectionParams?)

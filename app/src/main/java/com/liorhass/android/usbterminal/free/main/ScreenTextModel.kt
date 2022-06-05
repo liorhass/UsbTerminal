@@ -112,10 +112,28 @@ class ScreenTextModel(
     private var uid: Int = 1
         get() { field++; return field }
 
+    // Why is the flags shouldScrollToBottom an Int and not a Boolean?
+    // Well, it's a hack we have to use as a punishment for using a system
+    // designed to represent a state (Jetpack Compose) to pass a one-of commands.
+    // if it was a Boolean the following scenario might happen:
+    //  1. A trigger is made to scroll to bottom, which sets the flag to true
+    //  2. As a result recomposition happens and it scrolls to bottom
+    //  3. After that a call is made to onScrolledToBottom() on a LaunchedEffect
+    //     which reset the flag to false
+    //  4. Before a recomposition happens (due to the flag reset) some other code
+    //     adds content and triggers another scroll to bottom, which sets the flag
+    //     to true again
+    //  5. Finally the UI is ready to recompose, but from Compose's perspective
+    //     recomposition isn't needed since the flag never changed (was true and is
+    //     still true).
+    // The solution is to use an Int instead of a Boolean. 0 marks that no scroll
+    // is needed, and when a scroll is needed the flag is set to some unique
+    // Int (different every time). The composition makes (totally dummy) use of this Int
+    // which triggers a scroll even when the flag's reset is missed.
     data class ScreenState(
         val lines: Array<ScreenLine>,
         val displayedCursorPosition: DisplayedCursorPosition,
-        val shouldScrollToBottom: Int, // For an explanation why this is Int and not Boolean see mainViewModel.shouldMeasureScreenDimensions
+        val shouldScrollToBottom: Int, // For an explanation why this is Int and not Boolean see above
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

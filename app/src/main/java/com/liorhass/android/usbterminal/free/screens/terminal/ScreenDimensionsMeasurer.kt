@@ -15,7 +15,6 @@ package com.liorhass.android.usbterminal.free.screens.terminal
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
@@ -30,14 +29,16 @@ import com.liorhass.android.usbterminal.free.main.ScreenLine
 
 @Composable
 fun MeasureScreenDimensions(
-    onMeasuredScreenDimensions: (MainViewModel.ScreenDimensions) -> Unit,
+    onMeasuredScreenDimensions: (MainViewModel.ScreenDimensions, MainViewModel.ScreenMeasurementCommand) -> Unit,
     fontSize: Int,
-    requestUID: Int,
+    shouldMeasureScreenDimensions: MainViewModel.ScreenMeasurementCommand,
+    requestUID: Int, // Used to force recomposition
 ) {
+    // Timber.d("MeasureScreenDimensions shouldMeasureScreenDimensions=${shouldMeasureScreenDimensions.name}")
     // A hack to measure line width in characters:
     // We draw a very long line and use textLayoutResult.getLineEnd() to get it.
     var screenDimensions =  MainViewModel.ScreenDimensions(0,0)
-    val longLine = ScreenLine(text = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx$requestUID")
+    val longLine = ScreenLine(text = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx${requestUID}") // Dummy use of requestUID. Only to force recomposition when it changes
     Box(modifier = Modifier
         .fillMaxSize()
         .background(Color.Transparent) // todo: Should be text-screen background color (if it's not always black)
@@ -77,7 +78,7 @@ fun MeasureScreenDimensions(
             // they're only partially visible. We consider a partially-visible line as
             // off-screen rather than as on-screen
             screenDimensions = screenDimensions.copy(height = listState.layoutInfo.visibleItemsInfo.size - 1)
-            onMeasuredScreenDimensions(screenDimensions)
+            onMeasuredScreenDimensions(screenDimensions, shouldMeasureScreenDimensions)
         }
     }
 }

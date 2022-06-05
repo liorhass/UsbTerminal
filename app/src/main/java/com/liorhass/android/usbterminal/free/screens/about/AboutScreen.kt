@@ -79,7 +79,7 @@ fun AboutScreen(
                 modifier = Modifier
                     .alignByBaseline()
                     .padding(start = 6.dp),
-                fontSize = 24.sp
+                fontSize = 22.sp
             )
             Text(
                 // BuildConfig.VERSION_NAME is from build.gradle(:app) android/defaultConfig/versionName
@@ -88,7 +88,7 @@ fun AboutScreen(
                 modifier = Modifier
                     .alignByBaseline()
                     .padding(start = 12.dp),
-                fontSize = 18.sp
+                fontSize = 14.sp
             )
         }
 

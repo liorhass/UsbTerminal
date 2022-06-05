@@ -84,24 +84,25 @@ fun TerminalScreen(
                 shouldScrollToBottom = mainViewModel.screenHexShouldScrollToBottom,
                 shouldReportIfAtBottom = shouldReportIfAtBottom,
                 onReportIfAtBottom = mainViewModel::onReportIfAtBottom,
-                onScrolledToBottom = mainViewModel::onScreenHexScrolledToBottom,
+                onScrolledToBottom = mainViewModel.onScreenHexScrolledToBottom,
                 fontSize = fontSize,
                 mainFocusRequester = mainFocusRequester,
                 auxFocusRequester = auxFocusRequester,
-                onKeyboardStateChange = { mainViewModel.remeasureScreenDimensions() }
+                onKeyboardStateChange = mainViewModel::remeasureScreenDimensions
             )
         } else {
             TerminalScreenTextSection(
                 screenState = mainViewModel.textScreenState,
-                shouldMeasureScreenDimensions = shouldMeasureScreenDimensions,
+                shouldMeasureScreenDimensions = shouldMeasureScreenDimensions.cmd,
+                requestUID = shouldMeasureScreenDimensions.uid, // Used to force recomposition when screen-measurement is needed
                 onScreenDimensionsMeasured = mainViewModel::onScreenDimensionsMeasured,
                 shouldReportIfAtBottom = shouldReportIfAtBottom,
                 onReportIfAtBottom = mainViewModel::onReportIfAtBottom,
-                onScrolledToBottom = mainViewModel::onScreenTxtScrolledToBottom,
+                onScrolledToBottom = mainViewModel.onScreenTxtScrolledToBottom,
                 fontSize = fontSize,
                 mainFocusRequester = mainFocusRequester,
                 auxFocusRequester = auxFocusRequester,
-                onKeyboardStateChange = { mainViewModel.remeasureScreenDimensions() }
+                onKeyboardStateChange = mainViewModel::remeasureScreenDimensions
             )
         }
         TextToXmitInputField(

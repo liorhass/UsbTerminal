@@ -42,8 +42,9 @@ import timber.log.Timber
 @Composable
 fun ColumnScope.TerminalScreenTextSection(
     screenState: State<ScreenTextModel.ScreenState>,
-    shouldMeasureScreenDimensions: Int,
-    onScreenDimensionsMeasured: (MainViewModel.ScreenDimensions) -> Unit,
+    shouldMeasureScreenDimensions: MainViewModel.ScreenMeasurementCommand,
+    requestUID: Int, // Used to force recomposition when screen-measurement is needed
+    onScreenDimensionsMeasured: (MainViewModel.ScreenDimensions, MainViewModel.ScreenMeasurementCommand) -> Unit,
     shouldReportIfAtBottom: Boolean,
     onReportIfAtBottom: (Boolean) -> Unit,
     onScrolledToBottom: (Int) -> Unit,
@@ -72,8 +73,8 @@ fun ColumnScope.TerminalScreenTextSection(
         .fillMaxWidth()
         .weight(1f, fill = true) // We use this instead of fillMaxSize() so TerminalScreenTextSection won't fill the screen and leave room for the status line at the bottom
     ) {
-        if (shouldMeasureScreenDimensions != 0) {
-            MeasureScreenDimensions(onScreenDimensionsMeasured, fontSize, shouldMeasureScreenDimensions)
+        if (shouldMeasureScreenDimensions != MainViewModel.ScreenMeasurementCommand.NOOP) {
+            MeasureScreenDimensions(onScreenDimensionsMeasured, fontSize, shouldMeasureScreenDimensions, requestUID)
         }
         LazyColumn(
             state = lazyListState,

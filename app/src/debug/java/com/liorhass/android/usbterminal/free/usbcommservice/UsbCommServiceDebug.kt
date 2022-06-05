@@ -138,6 +138,7 @@ fun usbCommServiceDebug(
             ioPacketsList.appendData( "$nLines".toByteArray(), IOPacketsList.DataDirection.IN)
             ioPacketsList.appendData( "\u001B[H".toByteArray(), IOPacketsList.DataDirection.IN) // home
             ioPacketsList.appendData( "\u001B[0J".toByteArray(), IOPacketsList.DataDirection.IN) // Clear from cursor to end-of-screen (including under cursor)
+            ioPacketsList.appendData( "##### I'm at the screen's top\n".toByteArray(), IOPacketsList.DataDirection.IN)
 
 
             ioPacketsList.inputPaused()
