@@ -10,9 +10,11 @@ Typical use-cases for this app are:
 
 The app is available at the [Google Play Store](https://play.google.com/store/apps/details?id=com.liorhass.android.usbterminal.free)
 
-<img src="Art/Screenshots/Screenshot_01.png" width="300">
+This is how its main screen looks:
 
-[More screenshots](Art/Screenshots/README.md) 
+<img src="Art/Screenshots/Screenshot_01.png" width="400">
+
+More screenshots are available [here](Art/Screenshots/README.md) 
 
 ## Features:
 * Support devices with the following USB to Serial protocols/chips

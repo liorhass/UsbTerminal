@@ -1,12 +1,61 @@
 ## UsbTerminal Screenshots
-![Image 1](Screenshot_01.png)
-<img src="Screenshot_01.png" width="100" height="100">
-![Image 2](Screenshot_02.png)
-![Image 3](Screenshot_03.png)
-![Image 4](Screenshot_04.png)
-![Image 5](Screenshot_05.png)
-![Image 6](Screenshot_06.png)
-![Image 7](Screenshot_07.png)
-![Image 8](Screenshot_08.png)
-![Image 9](Screenshot_09.png)
-![Image 10](Screenshot_10.png)
+
+Main screen in *Text* mode
+
+<img src="Screenshot_01.png" alt="Main screen in Text mode" width="400">
+
+---
+
+Main screen in *Hex* mode
+
+<img src="Screenshot_02.png" alt="Main screen in Hex mode" width="400">
+
+---
+
+Log files
+
+<img src="Screenshot_03.png" alt="Log files" width="400">
+
+---
+
+Selected log file(s)
+
+<img src="Screenshot_04.png" alt="Selected log file(s)" width="400">
+
+---
+
+Main screen with keyboard and control-buttons 
+
+<img src="Screenshot_05.png" alt="Main screen with keyboard and control-buttons" width="400">
+
+---
+
+Navigation drawer
+
+<img src="Screenshot_06.png" alt="Navigation drawer" width="400">
+
+---
+
+Settings/General
+
+<img src="Screenshot_07.png" alt="Settings/General" width="400">
+
+---
+
+Settings/Terminal
+
+<img src="Screenshot_08.png" alt="Settings/Terminal" width="400">
+
+---
+
+Settings/Serial
+
+<img src="Screenshot_09.png" alt="Settings/Serial" width="400">
+
+---
+
+Built-in help
+
+<img src="Screenshot_10.png" alt="Built-in help" width="400">
+
+
