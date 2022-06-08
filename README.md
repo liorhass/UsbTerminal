@@ -10,6 +10,10 @@ Typical use-cases for this app are:
 
 The app is available at the [Google Play Store](https://play.google.com/store/apps/details?id=com.liorhass.android.usbterminal.free)
 
+<img src="Art/Screenshots/Screenshot_01.png" width="300">
+
+[More screenshots](Art/Screenshots/README.md) 
+
 ## Features:
 * Support devices with the following USB to Serial protocols/chips
   * CDC-ACM based devices (e.g. Arduino Uno R3)
@@ -27,7 +31,7 @@ The app is available at the [Google Play Store](https://play.google.com/store/ap
      Input field. Keyboard input goes to that input
      field and is sent to the device only after a “Send” button is pressed
 * Partial support of ANSI/VT100 escape sequences including text coloring. See
-  [Supported control characters and escape codes](#supported-characters-and-escape-sequences) below
+  [Supported escape sequences](#Supported escape sequences) below
 * Two display modes: Text and Hex
   1. Text - “Normal” text terminal mode
   2. Hex - Data is displayed as Hex-dump

@@ -12,6 +12,7 @@
 /captures
 .externalNativeBuild
 .cxx
+desktop.ini
 
 local.properties
 keystore.properties
