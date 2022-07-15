@@ -27,6 +27,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.liorhass.android.usbterminal.free.BuildConfig
 import com.liorhass.android.usbterminal.free.R
+import com.liorhass.android.usbterminal.free.UsbTerminalApplication
 import com.liorhass.android.usbterminal.free.main.MainViewModel
 import com.liorhass.android.usbterminal.free.settings.model.SettingsRepository
 import com.liorhass.android.usbterminal.free.usbcommservice.LogFile
@@ -158,6 +159,7 @@ class LogFilesListViewModel(
         }
 
         val file = File(logFilesDir, selectedFile.fileName)
+        // Timber.d("absolutePath=${file.absolutePath}")
         val uri = FileProvider.getUriForFile(
             getApplication(),
             BuildConfig.APPLICATION_ID + ".fileprovider",
@@ -175,8 +177,9 @@ class LogFilesListViewModel(
                 return@launch // TODO: show some error message to the user
             }
 
+            // Timber.d("absolutePath=${zipFile.absolutePath}")
             val uri: Uri = FileProvider.getUriForFile(
-                getApplication(),
+                getApplication<UsbTerminalApplication>(),
                 BuildConfig.APPLICATION_ID + ".fileprovider",
                 zipFile)
 
@@ -241,7 +244,7 @@ class LogFilesListViewModel(
      * @return The zipped file's File instance
      */
     private fun zipSelectedFiles(): File? {
-        val cacheDir = getApplication<Application>().cacheDir
+        val cacheDir = getApplication<UsbTerminalApplication>().cacheDir
         val outputFileName = LogFile.generateFileName() + ".zip"
         val outputFile = File(cacheDir, outputFileName)
         val zos = ZipOutputStream(BufferedOutputStream(FileOutputStream(outputFile)))
