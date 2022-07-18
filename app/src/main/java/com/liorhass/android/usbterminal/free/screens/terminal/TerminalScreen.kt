@@ -62,6 +62,7 @@ fun TerminalScreen(
     }
     val fontSize = settingsData.fontSize
     val textColor = Color(settingsData.defaultTextColor).copy(alpha = 1f)
+    val mainScreenShouldRespondToClicks = settingsData.inputMode == SettingsRepository.InputMode.CHAR_BY_CHAR // When in char-by-char mode, click on main screen opens the KB
     val shouldShowWelcomeMsg by mainViewModel.shouldShowWelcomeMsg
 //    val shouldShowWelcomeMsg by remember { mutableStateOf(true) } // For debugging
     val shouldShowUpgradeFromV1Msg by mainViewModel.shouldShowUpgradeFromV1Msg
@@ -87,6 +88,7 @@ fun TerminalScreen(
                 onReportIfAtBottom = mainViewModel::onReportIfAtBottom,
                 onScrolledToBottom = mainViewModel.onScreenHexScrolledToBottom,
                 fontSize = fontSize,
+                shouldRespondToClicks = mainScreenShouldRespondToClicks,
                 mainFocusRequester = mainFocusRequester,
                 auxFocusRequester = auxFocusRequester,
                 onKeyboardStateChange = mainViewModel::remeasureScreenDimensions
@@ -102,6 +104,7 @@ fun TerminalScreen(
                 onScrolledToBottom = mainViewModel.onScreenTxtScrolledToBottom,
                 fontSize = fontSize,
                 textColor = textColor,
+                shouldRespondToClicks = mainScreenShouldRespondToClicks,
                 mainFocusRequester = mainFocusRequester,
                 auxFocusRequester = auxFocusRequester,
                 onKeyboardStateChange = mainViewModel::remeasureScreenDimensions

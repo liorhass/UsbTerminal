@@ -42,6 +42,7 @@ fun ColumnScope.TerminalScreenHexSection(
     onReportIfAtBottom: (Boolean) -> Unit,
     onScrolledToBottom: () -> Unit,
     fontSize: Int,
+    shouldRespondToClicks: Boolean,
     mainFocusRequester: FocusRequester,
     auxFocusRequester: FocusRequester,
     onKeyboardStateChange: () -> Unit,
@@ -68,13 +69,15 @@ fun ColumnScope.TerminalScreenHexSection(
             .weight(1f, true)
             .background(Color.Black) //todo: from config in combination with text color
             .clickable(interactionSource, indication = null) {
-                atBottomBeforeKBWasOpened =
-                    lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == lazyListState.layoutInfo.totalItemsCount - 1
-                openSoftKeyboard(
-                    coroutineScope = coroutineScope,
-                    mainFocusRequester = mainFocusRequester,
-                    auxFocusRequester = auxFocusRequester,
-                )
+                if (shouldRespondToClicks) {
+                    atBottomBeforeKBWasOpened =
+                        lazyListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == lazyListState.layoutInfo.totalItemsCount - 1
+                    openSoftKeyboard(
+                        coroutineScope = coroutineScope,
+                        mainFocusRequester = mainFocusRequester,
+                        auxFocusRequester = auxFocusRequester,
+                    )
+                }
             },
     ) {
         items(

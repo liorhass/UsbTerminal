@@ -162,7 +162,7 @@ fun WholeLineTextToXmitInputField(
             .fillMaxWidth()
             .padding(start = 2.dp)
     ) {
-        Timber.d("WholeLineTextToXmitInputField(): textToXmit='${textToXmit.value}'")
+        // Timber.d("WholeLineTextToXmitInputField(): textToXmit='${textToXmit.value}'")
         BasicTextField(
             value = textToXmit.value,
             onValueChange = onTextChanged,
