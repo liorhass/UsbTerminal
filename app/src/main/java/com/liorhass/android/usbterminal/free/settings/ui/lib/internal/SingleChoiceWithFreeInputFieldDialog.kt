@@ -25,11 +25,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -38,9 +36,6 @@ import timber.log.Timber
 
 /**
  * Display a list of radio-buttons and one free-text field.
- *
- * @param initiallySelectedIndex -1 if nothing is selected, choices.size if the freeInputField is selected
- * @param onSelection If the freeInputField is selected index is set to choices.size
  */
 @OptIn(ExperimentalComposeUiApi::class) // 20220220 for LocalSoftwareKeyboardController
 @Composable
@@ -48,13 +43,20 @@ fun SingleChoiceWithFreeInputFieldDialog(
     title: @Composable () -> Unit,
     choices: List<String>,
     freeInputFieldValue: String,
+    freeInputFieldLabel: String,
+    freeInputFieldIsValid: Boolean,
     initiallySelectedIndex: Int, // -1 if nothing is selected, choices.size if freeInputField is selected
+    bottomBlockContent: (@Composable ColumnScope.() -> Unit)?,
+    onFreeInputFieldChange: ((String) -> Unit)?,
     onCancel: () -> Unit,
+    keyboardOptions: KeyboardOptions,
     onSelection: (index: Int, freeInputFieldValue: String) -> Unit,
-    keyboardOptions: KeyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
 ) {
-    var freeInputFieldText by remember { mutableStateOf(freeInputFieldValue) }
-    var okButtonEnabled by remember { mutableStateOf(false) }
+    // If onFreeInputFieldChange() callback is null we maintain the value of the
+    // free-input-field locally in this var. Otherwise we call onFreeInputFieldChange()
+    // on every change, and let our controller (e.g. viewModel) handle these changes
+    // (by setting our freeInputFieldValue on each change)
+    var freeInputFieldValueLocal by remember { mutableStateOf(freeInputFieldValue) }
     var selectedIndex by remember { mutableStateOf(initiallySelectedIndex) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -77,14 +79,20 @@ fun SingleChoiceWithFreeInputFieldDialog(
 
                 RadioButtonGroupWithFreeInputField(
                     labels = choices,
-                    freeInputFieldValue = freeInputFieldValue,
+                    freeInputFieldValue = if (onFreeInputFieldChange != null) freeInputFieldValue else freeInputFieldValueLocal,
+                    freeInputFieldLabel = freeInputFieldLabel,
                     selectedIndex = selectedIndex,
-                    onFreeFieldChange = {newText -> freeInputFieldText = newText},
+                    bottomBlockContent = bottomBlockContent,
+                    onFreeInputFieldChange = { newText ->
+                        if (onFreeInputFieldChange != null) {
+                            onFreeInputFieldChange(newText)
+                        } else {
+                            freeInputFieldValueLocal = newText
+                        }
+                    },
                     onSelection = { index ->
-                        Timber.d("onSelection index=$index")
                         if (index == choices.size) {
                             selectedIndex = index
-                            okButtonEnabled = true
                         } else {
                             keyboardController?.hide()
                             onSelection(index, choices[index])
@@ -93,7 +101,7 @@ fun SingleChoiceWithFreeInputFieldDialog(
                     keyboardOptions = keyboardOptions,
                     keyboardActions = KeyboardActions(onDone = {
                         keyboardController?.hide()
-                        onSelection(choices.size, freeInputFieldText)
+                        onSelection(choices.size, if (onFreeInputFieldChange == null) freeInputFieldValueLocal else freeInputFieldValue)
                     }),
                 )
 
@@ -106,16 +114,15 @@ fun SingleChoiceWithFreeInputFieldDialog(
                     TextButton(onClick = onCancel) {
                         Text(text = stringResource(R.string.cancel_all_caps))
                     }
-                    if (okButtonEnabled) {
-                        Spacer(modifier = Modifier.width(4.dp))
-                        TextButton(
-                            onClick = {
-                                keyboardController?.hide()
-                                onSelection(choices.size, freeInputFieldText)
-                            }
-                        ) {
-                            Text(text = stringResource(R.string.ok))
+                    Spacer(modifier = Modifier.width(4.dp))
+                    TextButton(
+                        enabled = freeInputFieldIsValid,
+                        onClick = {
+                            keyboardController?.hide()
+                            onSelection(choices.size, if (onFreeInputFieldChange == null) freeInputFieldValueLocal else freeInputFieldValue)
                         }
+                    ) {
+                        Text(text = stringResource(R.string.ok))
                     }
                 }
             }
@@ -127,9 +134,11 @@ fun SingleChoiceWithFreeInputFieldDialog(
 @Composable
 fun RadioButtonGroupWithFreeInputField(
     labels: List<String>,
+    freeInputFieldLabel: String,
     freeInputFieldValue: String,
     selectedIndex: Int,
-    onFreeFieldChange: (newText: String) -> Unit,
+    bottomBlockContent: (@Composable ColumnScope.() -> Unit)?,
+    onFreeInputFieldChange: (newText: String) -> Unit,
     onSelection: (index: Int) -> Unit,
     keyboardOptions: KeyboardOptions,
     keyboardActions: KeyboardActions,
@@ -145,13 +154,18 @@ fun RadioButtonGroupWithFreeInputField(
             )
         }
         RadioButtonWithFreeInputField(
+            label = freeInputFieldLabel,
             freeInputFieldValue = freeInputFieldValue,
             isSelected = selectedIndex == labels.size,
-            onTextChange = onFreeFieldChange,
+            onTextChange = onFreeInputFieldChange,
             onSelect = { onSelection(labels.size) },
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
         )
+        if (bottomBlockContent != null) {
+            Spacer(modifier = Modifier.height(16.dp))
+            bottomBlockContent()
+        }
     }
 }
 
@@ -163,8 +177,26 @@ fun RadioButtonGroupWithFreeInputFieldPreview() {
     RadioButtonGroupWithFreeInputField(
         labels,
         freeInputFieldValue = "FREE",
+        freeInputFieldLabel = "Any baud rate",
         selectedIndex = 1,
-        onFreeFieldChange = {},
+        bottomBlockContent = {
+            Box(
+                modifier = Modifier
+                    .height(40.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .background(color = Color.Black),
+                    contentAlignment = Alignment.CenterStart,
+            ) {
+                Text(
+                    text = "Text color - Green",
+                    color = Color(0xffff6c00),
+                    modifier = Modifier
+                        .padding(start = 8.dp),
+                )
+            }
+        },
+        onFreeInputFieldChange = {},
         onSelection = {},
         keyboardOptions = KeyboardOptions(),
         keyboardActions = KeyboardActions(),
@@ -201,6 +233,7 @@ fun RadioButtonWithLabel(
 
 @Composable
 fun RadioButtonWithFreeInputField(
+    label: String,
     freeInputFieldValue: String,
     isSelected: Boolean,
     onTextChange: (newText: String) -> Unit,
@@ -208,7 +241,7 @@ fun RadioButtonWithFreeInputField(
     keyboardOptions: KeyboardOptions,
     keyboardActions: KeyboardActions,
 ) {
-    var value by remember { mutableStateOf(TextFieldValue(freeInputFieldValue)) }
+//todo:2brm     var value by remember { mutableStateOf(TextFieldValue(freeInputFieldValue)) }
 
     // initialize focus reference to be able to request focus programmatically. https://stackoverflow.com/a/66626506/1071117
     val focusRequester = FocusRequester()
@@ -231,9 +264,9 @@ fun RadioButtonWithFreeInputField(
         )
 
         OutlinedTextField(
-            value = value,
-            onValueChange = {value = it; onTextChange(it.text)},
-            label = { Text("Any Baud Rate") },
+            value = freeInputFieldValue,
+            onValueChange = { onTextChange(it) },
+            label = { Text(label) },
             modifier = Modifier
                 .padding(start = 8.dp, top = 2.dp)
                 .align(Alignment.CenterVertically)

@@ -19,6 +19,7 @@ import android.content.*
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
 import android.os.IBinder
+import androidx.annotation.StringRes
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -206,6 +207,54 @@ class MainViewModel(
     fun setTopBarTitle(fmtResId: Int, vararg args: Any) {
         _topBarTitle.value = TopBarTitleParams(fmtResId, args)
     }
+
+    // Used by settings screen when selecting default text color
+    data class DefaultTextColorDialogParams(
+        val preSelectedIndex: Int,
+        val freeTextInputField: String,
+        @StringRes val exampleText: Int,
+        val color: Int,
+        val isOk: Boolean,
+    )
+    private val _defaultTextColorDialogParams = mutableStateOf(DefaultTextColorDialogParams(
+        exampleText = R.string.this_is_how_it_looks,
+        freeTextInputField = settingsData.defaultTextColorFreeInput.let{if (it == -1) "" else it.toString(16)},
+        color = settingsData.defaultTextColor,
+        isOk = true,
+        preSelectedIndex = settingsRepository.indexOfTextColor(settingsData.defaultTextColor)
+    ))
+    val defaultTextColorDialogParams: State<DefaultTextColorDialogParams> = _defaultTextColorDialogParams
+    fun onDefaultTextColorFreeTextChanged(newText: String) {
+        val colorValue = newText.toIntOrNull(16) ?: -1
+        if (colorValue in 0..0xffffff  &&  newText.length == 6) {
+            _defaultTextColorDialogParams.value = DefaultTextColorDialogParams(
+                preSelectedIndex = SettingsRepository.DefaultTextColorValues.preDefined.size,
+                freeTextInputField = newText,
+                exampleText = R.string.this_is_how_it_looks,
+                color = colorValue,
+                isOk = true,
+            )
+        } else {
+            _defaultTextColorDialogParams.value = DefaultTextColorDialogParams(
+                preSelectedIndex = SettingsRepository.DefaultTextColorValues.preDefined.size,
+                freeTextInputField = newText,
+                exampleText = R.string.ooops_illegal_color,
+                color = 0xff0044, //todo: should be pallet's error-color
+                isOk = false,
+            )
+        }
+    }
+    fun onDefaultTextColorSelected(selectionIndex: Int, colorStr: String) {
+        if (selectionIndex == SettingsRepository.DefaultTextColorValues.preDefined.size) {
+            val colorValue = colorStr.toIntOrNull(16) ?: -1
+            if (colorValue in 0..0xffffff) {
+                settingsRepository.setDefaultTextColor(colorValue)
+            }
+        } else {
+            settingsRepository.setDefaultTextColor(SettingsRepository.DefaultTextColorValues.preDefined[selectionIndex])
+        }
+    }
+
 
     // A bound communication service. Holding this reference is ok since anyway the usbCommService outlives this ViewModel
     @SuppressLint("StaticFieldLeak")
@@ -697,6 +746,24 @@ class MainViewModel(
         // This is outside the above if() because we should try to connect only on startup and
         // not whenever this settings flag becomes true
         alreadyTriedToConnectToDeviceOnStartup = true
+
+        if (newSettingsData.defaultTextColor != oldSettingsData.defaultTextColor) {
+            var preSelectedIndex = settingsRepository.indexOfTextColor(settingsData.defaultTextColor)
+            if (preSelectedIndex == -1) {
+                preSelectedIndex = SettingsRepository.DefaultTextColorValues.preDefined.size
+            }
+            _defaultTextColorDialogParams.value =
+                _defaultTextColorDialogParams.value.copy(
+                    preSelectedIndex = preSelectedIndex,
+                    color = newSettingsData.defaultTextColor,
+                )
+        }
+        if (newSettingsData.defaultTextColorFreeInput != oldSettingsData.defaultTextColorFreeInput) {
+            _defaultTextColorDialogParams.value =
+                _defaultTextColorDialogParams.value.copy(
+                    freeTextInputField = newSettingsData.defaultTextColorFreeInput.toString(16),
+                )
+        }
     }
 
     private fun tryToConnectToFirstDevice() {

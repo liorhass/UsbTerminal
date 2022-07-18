@@ -46,6 +46,7 @@ fun MeasureScreenDimensions(
         TerminalScreenLine(
             line = longLine,
             fontSize = fontSize,
+            textColor = Color.Black,
             onTextLayout = { textLayoutResult ->
                 val lineEndIndex = textLayoutResult.getLineEnd(lineIndex = 0, visibleEnd = true)
                 screenDimensions = screenDimensions.copy(width = lineEndIndex)
@@ -69,6 +70,7 @@ fun MeasureScreenDimensions(
                 TerminalScreenLine(
                     line = line,
                     fontSize = fontSize,
+                    textColor = Color.Black,
                     modifier = Modifier.alpha(0f),
                 )
             }

@@ -14,9 +14,7 @@
 package com.liorhass.android.usbterminal.free.settings.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -24,7 +22,9 @@ import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
@@ -38,7 +38,6 @@ import com.liorhass.android.usbterminal.free.settings.ui.lib.SettingsCheckbox
 import com.liorhass.android.usbterminal.free.settings.ui.lib.SettingsFreeText
 import com.liorhass.android.usbterminal.free.settings.ui.lib.SettingsSingleChoice
 import com.liorhass.android.usbterminal.free.settings.ui.lib.SettingsSwitch
-import com.liorhass.android.usbterminal.free.ui.util.GeneralDialog
 
 @Composable
 fun TerminalSettingsPage(
@@ -65,7 +64,6 @@ fun TerminalSettingsPage(
                 stringResource(R.string.auto),
                 stringResource(R.string.complete_line)
             ),
-            hasFreeInputField = false,
             preSelectedIndex = settingsData.inputMode,
         ) { choiceIndex, choiceValue ->
             mainViewModel.settingsRepository.setInputMode(choiceIndex)
@@ -101,6 +99,47 @@ fun TerminalSettingsPage(
             mainViewModel.settingsRepository.setFontSize(choiceValue)
         }
 
+        // Text color
+        val defaultTextColorDialogParams by mainViewModel.defaultTextColorDialogParams
+        SettingsSingleChoice(
+            title = { Text(text=stringResource(R.string.text_color)) },
+            icon = {
+                Icon(
+                    painterResource(R.drawable.ic_baseline_color_lens_24),
+                    contentDescription = stringResource(R.string.text_color),
+                )
+            },
+            choices = stringArrayResource(R.array.text_colors).toList(),
+            hasFreeInputField = true,
+            freeInputFieldLabel = "RGB hex value e.g. ee6c00", //todo: string
+            freeInputFieldValue = defaultTextColorDialogParams.freeTextInputField,//todo:2brm settingsData.defaultTextColorFreeInput.let{if (it == -1) "" else it.toString(16)}, //todo: string
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii, imeAction = ImeAction.Done),
+            freeInputFieldIsValid = defaultTextColorDialogParams.isOk,
+            preSelectedIndex = defaultTextColorDialogParams.preSelectedIndex,
+            bottomBlockContent = {
+                Box(
+                    modifier = Modifier
+                        .height(40.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .background(color = Color.Black),
+                    contentAlignment = Alignment.CenterStart,
+                ) {
+                    Text(
+                        text = stringResource(id = defaultTextColorDialogParams.exampleText),
+                        color = Color(defaultTextColorDialogParams.color).copy(alpha = 1f),
+                        modifier = Modifier
+                            .padding(start = 8.dp),
+                    )
+                }
+            },
+            onFreeInputFieldChange = {
+                mainViewModel.onDefaultTextColorFreeTextChanged(it)
+            }
+        ) { choiceIndex, choiceValue ->
+            mainViewModel.onDefaultTextColorSelected(choiceIndex, choiceValue)
+        }
+
 
         // Bytes-sent-by-enter-key (CR_LF/LF/CR)
         SettingsSingleChoice(
@@ -116,7 +155,6 @@ fun TerminalSettingsPage(
                 stringResource(R.string.lf),
                 stringResource(R.string.cr_lf),
             ),
-            hasFreeInputField = false,
             preSelectedIndex = settingsData.bytesSentByEnterKey,
         ) { choiceIndex, choiceValue ->
             mainViewModel.settingsRepository.setBytesSentByEnterKey(choiceIndex)

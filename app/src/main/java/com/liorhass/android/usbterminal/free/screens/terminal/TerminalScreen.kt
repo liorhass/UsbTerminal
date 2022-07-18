@@ -61,6 +61,7 @@ fun TerminalScreen(
         ScreenTextModel.DisplayedCursorPosition(0,0) // This isn't displayed anyway
     }
     val fontSize = settingsData.fontSize
+    val textColor = Color(settingsData.defaultTextColor).copy(alpha = 1f)
     val shouldShowWelcomeMsg by mainViewModel.shouldShowWelcomeMsg
 //    val shouldShowWelcomeMsg by remember { mutableStateOf(true) } // For debugging
     val shouldShowUpgradeFromV1Msg by mainViewModel.shouldShowUpgradeFromV1Msg
@@ -100,6 +101,7 @@ fun TerminalScreen(
                 onReportIfAtBottom = mainViewModel::onReportIfAtBottom,
                 onScrolledToBottom = mainViewModel.onScreenTxtScrolledToBottom,
                 fontSize = fontSize,
+                textColor = textColor,
                 mainFocusRequester = mainFocusRequester,
                 auxFocusRequester = auxFocusRequester,
                 onKeyboardStateChange = mainViewModel::remeasureScreenDimensions

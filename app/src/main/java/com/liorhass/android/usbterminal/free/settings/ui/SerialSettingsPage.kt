@@ -17,6 +17,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -24,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import com.liorhass.android.usbterminal.free.R
 import com.liorhass.android.usbterminal.free.main.MainViewModel
 import com.liorhass.android.usbterminal.free.settings.model.SettingsRepository
@@ -47,7 +50,9 @@ fun SerialSettingsPage(
             title = {Text(text= stringResource(R.string.baud_rate))},
             choices = SettingsRepository.BaudRateValues.preDefined.map { it.toString() },
             hasFreeInputField = true,
+            freeInputFieldLabel = "Any baud rate", //todo: string
             freeInputFieldValue = settingsData.baudRateFreeInput.let{if (it == -1) "" else it.toString()},
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
             preSelectedIndex = mainViewModel.settingsRepository.indexOfBaudRate(settingsData.baudRate),
         ) { choiceIndex, choiceValue ->
             mainViewModel.settingsRepository.setBaudRate(choiceValue)

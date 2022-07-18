@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.sp
 import com.liorhass.android.usbterminal.free.main.MainViewModel
 import com.liorhass.android.usbterminal.free.main.ScreenLine
 import com.liorhass.android.usbterminal.free.main.ScreenTextModel
-import com.liorhass.android.usbterminal.free.ui.theme.DefaultTextColorInTextMode
 import com.liorhass.android.usbterminal.free.ui.util.isKeyboardOpenAsState
 import timber.log.Timber
 
@@ -49,6 +48,7 @@ fun ColumnScope.TerminalScreenTextSection(
     onReportIfAtBottom: (Boolean) -> Unit,
     onScrolledToBottom: (Int) -> Unit,
     fontSize: Int,
+    textColor: Color,
     mainFocusRequester: FocusRequester,
     auxFocusRequester: FocusRequester,
     onKeyboardStateChange: () -> Unit,
@@ -96,7 +96,7 @@ fun ColumnScope.TerminalScreenTextSection(
                 items = lines,
                 key = { line -> line.uid },
             ) { line ->
-                TerminalScreenLine(line, fontSize)
+                TerminalScreenLine(line, fontSize, textColor)
             }
         }
     }
@@ -119,13 +119,14 @@ fun ColumnScope.TerminalScreenTextSection(
 fun TerminalScreenLine(
     line : ScreenLine,
     fontSize: Int,
+    textColor: Color,
     modifier: Modifier = Modifier,
     onTextLayout: (TextLayoutResult) -> Unit = {},
 ) {
 //    Timber.d("TerminalScreenLine(): line.textLength=${line.textLength}  line.annotation.size=${line.getAnnotatedString().spanStyles.size}")
     Text(
         text = line.getAnnotatedString(),
-        color = DefaultTextColorInTextMode, // todo: from config
+        color = textColor,
         fontFamily = FontFamily.Monospace,
         fontSize = fontSize.sp,
         overflow = TextOverflow.Clip,

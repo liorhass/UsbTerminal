@@ -128,6 +128,7 @@
     <string name="complete_line">Complete line</string>
     <string name="enter_key_sends_line">Enter-key sends line</string>
     <string name="font_size">Font size</string>
+    <string name="text_color">Text color</string>
     <string name="enter_key_sends">Enter-key sends</string>
     <string name="cr">CR</string>
     <string name="lf">LF</string>
@@ -171,6 +172,8 @@
     <string name="delete_files">Delete files</string>
     <string name="delete_files_warning" tools:ignore="PluralsCandidate">This will permanently delete the %1$d selected files!</string>
     <string name="delete_files_are_you_sure">Are you sure?</string>
+    <string name="this_is_how_it_looks">This is how it looks</string>
+    <string name="ooops_illegal_color">Ooops, illegal color</string>
 
 
 
@@ -211,6 +214,13 @@
         <item>22</item>
         <item>24</item>
         <item>28</item>
+    </string-array>
+
+    <!-- In coordination with SettingsRepository.TextColor.values -->
+    <string-array name="text_colors">
+        <item>White</item>
+        <item>Green</item>
+        <item>Amber</item>
     </string-array>
 
 </resources>

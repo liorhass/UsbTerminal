@@ -38,7 +38,7 @@ val ColorOfOutputHexTextForDarkTheme = Color(0xFFFFFF00) //Color.Green
 val TimestampColorForLightTheme = Color(0xFF888888)
 val TimestampColorForDarkTheme = Color(0xFF888888)
 
-val DefaultTextColorInTextMode = Color(0xFFEEEEEE)
+//todo:2brm val DefaultTextColorInTextMode = Color(0xFFEEEEEE)
 val CursorColorForLightTheme = Color(0xFFFFFFFF)
 val CursorColorForDarkTheme = Color(0xFFFFFFFF)
 val TextToXmitInputFieldBackgroundColorForLightTheme = Color(0xFFEEEEEE)

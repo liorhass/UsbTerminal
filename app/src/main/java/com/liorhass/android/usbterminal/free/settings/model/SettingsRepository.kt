@@ -61,6 +61,8 @@ class SettingsRepository private constructor(private val context: Context) {
         val bytesSentByEnterKey: Int = DefaultValues.bytesSentByEnterKey,
         val loopBack: Boolean = DefaultValues.loopBack,
         val fontSize: Int = DefaultValues.fontSize, // in sp
+        val defaultTextColor: Int = DefaultValues.defaultTextColor,
+        val defaultTextColorFreeInput: Int = DefaultValues.defaultTextColorFreeInput,
         val soundOn: Boolean = DefaultValues.soundOn,
         val silentlyDropUnrecognizedCtrlChars: Boolean = DefaultValues.silentlyDropUnrecognizedCtrlChars,
 
@@ -99,6 +101,8 @@ class SettingsRepository private constructor(private val context: Context) {
         const val bytesSentByEnterKey = BytesSentByEnterKey.CR
         const val loopBack = false
         const val fontSize = 16
+        const val defaultTextColor = 0xeeeeee
+        const val defaultTextColorFreeInput = -1
         const val soundOn = true
         const val silentlyDropUnrecognizedCtrlChars = true
 
@@ -128,6 +132,8 @@ class SettingsRepository private constructor(private val context: Context) {
         val SOUND_ON_KEY = booleanPreferencesKey("sound")
         val DROP_UNRECOGNIZED_CTRL_CHARS_KEY = booleanPreferencesKey("ducc")
         val FONT_SIZE_KEY = intPreferencesKey("fontSize")
+        val DEFAULT_TEXT_COLOR_KEY = intPreferencesKey("defaultTextColorDialogParams")
+        val DEFAULT_TEXT_COLOR_FREE_INPUT_KEY = intPreferencesKey("defaultTextColorFreeInput")
         val BAUD_RATE_KEY = intPreferencesKey("baudRate")
         val BAUD_RATE_FREE_INPUT_KEY = intPreferencesKey("baudRateFreeInput")
         val DATA_BITS_KEY = intPreferencesKey("dataBits")
@@ -167,6 +173,8 @@ class SettingsRepository private constructor(private val context: Context) {
             bytesSentByEnterKey = preferences[SettingsKeys.BYTES_SENT_BY_ENTER_KEY_KEY] ?: DefaultValues.bytesSentByEnterKey,
             loopBack = preferences[SettingsKeys.LOOPBACK_KEY] ?: DefaultValues.loopBack,
             fontSize = preferences[SettingsKeys.FONT_SIZE_KEY] ?: DefaultValues.fontSize,
+            defaultTextColor = preferences[SettingsKeys.DEFAULT_TEXT_COLOR_KEY] ?: DefaultValues.defaultTextColor,
+            defaultTextColorFreeInput = preferences[SettingsKeys.DEFAULT_TEXT_COLOR_FREE_INPUT_KEY] ?: DefaultValues.defaultTextColorFreeInput,
             soundOn = preferences[SettingsKeys.SOUND_ON_KEY] ?: DefaultValues.soundOn,
             silentlyDropUnrecognizedCtrlChars = preferences[SettingsKeys.DROP_UNRECOGNIZED_CTRL_CHARS_KEY] ?: DefaultValues.silentlyDropUnrecognizedCtrlChars,
 
@@ -241,6 +249,14 @@ class SettingsRepository private constructor(private val context: Context) {
     object FontSize {
         val values = arrayOf(8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 28)
     }
+    object DefaultTextColorValues { // In coordination with strings.xml->text_colors
+        val preDefined = arrayOf(
+            0xeeeeee, // White
+            0x66ff66, // Green
+            0xffc600, // Amber
+        )
+        fun isPreDefined(color: Int): Boolean = preDefined.contains(color)
+    }
 
     private val settingsFlow: Flow<Preferences> = context.settingsDataStore.data
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
@@ -302,6 +318,13 @@ class SettingsRepository private constructor(private val context: Context) {
         }
     }
 
+    fun setDefaultTextColor(newTextColor: Int) {
+        updateSettingsDataStore(SettingsKeys.DEFAULT_TEXT_COLOR_KEY, newTextColor)
+        if (! DefaultTextColorValues.isPreDefined(newTextColor)) {
+            updateSettingsDataStore(SettingsKeys.DEFAULT_TEXT_COLOR_FREE_INPUT_KEY, newTextColor)
+        }
+    }
+
     fun setThemeType(themeType: Int) { updateSettingsDataStore(SettingsKeys.THEME_TYPE_KEY, themeType) }
     fun setInputMode(inputMode: Int) { updateSettingsDataStore(SettingsKeys.INPUT_MODE_KEY, inputMode) }
     fun setBytesSentByEnterKey(bytesSentByEnterKey: Int) { updateSettingsDataStore(SettingsKeys.BYTES_SENT_BY_ENTER_KEY_KEY, bytesSentByEnterKey) }
@@ -332,6 +355,21 @@ class SettingsRepository private constructor(private val context: Context) {
                 settings[key] = value
             }
         }
+    }
+
+    /**
+     * Find the index of a specified text-color in the predefined-text-colors-list
+     *
+     * @return: If text-color is one of the predefined values, return its index. Otherwise
+     * return the size of the predefine text colors list (as if the index is one place
+     * beyond the end of that list).
+     */
+    fun indexOfTextColor(color: Int): Int {
+        var index = DefaultTextColorValues.preDefined.indexOfFirst { it == color }
+        if (index == -1) {
+            index = DefaultTextColorValues.preDefined.size
+        }
+        return index
     }
 
     /**
