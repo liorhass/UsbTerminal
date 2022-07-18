@@ -110,6 +110,7 @@
     <string name="connect_to_usb_device_on_start">Connect to USB device on start</string>
     <string name="also_log_outgoing_data">Also log outgoing data</string>
     <string name="mark_logged_outgoing_data">Mark logged outgoing data</string>
+    <string name="zip_log_files_when_sharing">Zip log files when sharing</string>
     <string name="max_bytes_to_retain_for_back_scroll">Max bytes to retain (for back-scroll)</string>
     <string name="max_bytes_to_retain">Max bytes to retain</string>
     <string name="default_sharing_email_addresses">Default sharing email address(s)</string>

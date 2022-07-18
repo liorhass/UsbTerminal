@@ -213,27 +213,28 @@ fun LogFilesListScreen(
     LaunchedEffect(context) {
         val activity = context.getActivity()
         viewModel.shouldShareFile.collect { fileShareInfo ->
-            if (fileShareInfo.file != null) {
+            if (fileShareInfo.uriList != null) {
                 if (activity != null) {
                     val emailAddresses = mainViewModel.settingsRepository.settingsStateFlow.value.emailAddressForSharing.split(",")
                         .toTypedArray()
                     // See: https://medium.com/androiddevelopers/sharing-content-between-android-apps-2e6db9d1368b  and  https://stackoverflow.com/a/52843942/1071117
                     // https://code.luasoftware.com/tutorials/android/android-share-intent-with-chooser/
-                    val intent = ShareCompat.IntentBuilder(activity)
-                        .setStream(fileShareInfo.uri)
+                    val intentBuilder = ShareCompat.IntentBuilder(activity)
                         .setType(fileShareInfo.mimeType)
                         .setSubject(context.getString(fileShareInfo.subjectLine))
                         .setEmailTo(emailAddresses)
                         .setChooserTitle(fileShareInfo.chooserTitle)
-                        .intent
-                        .setDataAndType(fileShareInfo.uri, fileShareInfo.mimeType)
-                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    fileShareInfo.uriList.forEach { uri ->
+                        intentBuilder.addStream(uri)
+                    }
+                    val intent = intentBuilder.intent
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
                     val chooserIntent = Intent.createChooser(intent, context.getString(fileShareInfo.chooserTitle))
                     try {
                         startActivity(activity, chooserIntent, null)
                     } catch (e: Exception) {
-                        Timber.e("Can't share URI:'${fileShareInfo.uri}'. Exception: ${e.message}")
+                        Timber.e("Can't share URI:'${fileShareInfo.uriList.firstOrNull() ?: "null"}'. Exception: ${e.message}")
                     }
                 }
 

@@ -102,6 +102,19 @@ fun GeneralSettingsPage(
             mainViewModel.settingsRepository.setMarkLoggedOutgoingData(checked)
         }
 
+        // Zip log files when sharing
+        SettingsSwitch(
+            title = {Text(text=stringResource(R.string.zip_log_files_when_sharing))},
+            checked = settingsData.zipLogFilesWhenSharing,
+            enabled = (settingsData.logSessionDataToFile),
+            icon = {Icon(
+                painterResource(R.drawable.folder_zip_outline),
+                contentDescription = stringResource(R.string.zip_log_files_when_sharing),
+            )},
+        ) { checked ->
+            mainViewModel.settingsRepository.setZipLogFilesWhenSharing(checked)
+        }
+
         // Work Also In Background
         var shouldDisplayWorkInBGDialog by remember { mutableStateOf(false) }
         SettingsSwitch(

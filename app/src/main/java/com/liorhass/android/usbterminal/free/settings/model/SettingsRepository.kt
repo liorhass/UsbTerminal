@@ -50,6 +50,7 @@ class SettingsRepository private constructor(private val context: Context) {
         val logSessionDataToFile: Boolean = DefaultValues.logSessionDataToFile,
         val alsoLogOutgoingData: Boolean = DefaultValues.alsoLogOutgoingData,
         val markLoggedOutgoingData: Boolean = DefaultValues.markLoggedOutgoingData,
+        val zipLogFilesWhenSharing: Boolean = DefaultValues.zipLogFilesWhenSharing,
         val connectToDeviceOnStart: Boolean = DefaultValues.connectToDeviceOnStart,
         val emailAddressForSharing: String = DefaultValues.emailAddressForSharing, // Comma-separated list of email addresses
         val workAlsoInBackground: Boolean = DefaultValues.workAlsoInBackground,
@@ -90,6 +91,7 @@ class SettingsRepository private constructor(private val context: Context) {
         const val logSessionDataToFile = false
         const val alsoLogOutgoingData = false
         const val markLoggedOutgoingData = true
+        const val zipLogFilesWhenSharing = true
         const val connectToDeviceOnStart = true
         const val emailAddressForSharing= "" // Comma-separated list of email addresses
         const val workAlsoInBackground = true
@@ -144,6 +146,7 @@ class SettingsRepository private constructor(private val context: Context) {
         val LOG_SESSION_DATA_TO_FILE_KEY = booleanPreferencesKey("logToFile")
         val ALSO_LOG_OUTGOING_DATA_KEY = booleanPreferencesKey("logOutgoing")
         val MARK_LOGGED_OUTGOING_DATA_KEY = booleanPreferencesKey("markOutgoing")
+        val ZIP_LOG_FILES_WHEN_SHARING_KEY = booleanPreferencesKey("zipShrdLogs")
         val CONNECT_TO_DEVICE_ON_START_KEY = booleanPreferencesKey("cos")
         val EMAIL_ADDR_FOR_SHARING_KEY = stringPreferencesKey("eafs")
         val WORK_ALSO_IN_BACKGROUND_KEY = booleanPreferencesKey("bg")
@@ -162,6 +165,7 @@ class SettingsRepository private constructor(private val context: Context) {
             logSessionDataToFile = preferences[SettingsKeys.LOG_SESSION_DATA_TO_FILE_KEY] ?: DefaultValues.logSessionDataToFile,
             alsoLogOutgoingData = preferences[SettingsKeys.ALSO_LOG_OUTGOING_DATA_KEY] ?: DefaultValues.alsoLogOutgoingData,
             markLoggedOutgoingData = preferences[SettingsKeys.MARK_LOGGED_OUTGOING_DATA_KEY] ?: DefaultValues.markLoggedOutgoingData,
+            zipLogFilesWhenSharing = preferences[SettingsKeys.ZIP_LOG_FILES_WHEN_SHARING_KEY] ?: DefaultValues.zipLogFilesWhenSharing,
             connectToDeviceOnStart = preferences[SettingsKeys.CONNECT_TO_DEVICE_ON_START_KEY] ?: DefaultValues.connectToDeviceOnStart,
             emailAddressForSharing = preferences[SettingsKeys.EMAIL_ADDR_FOR_SHARING_KEY] ?: DefaultValues.emailAddressForSharing,
             workAlsoInBackground = preferences[SettingsKeys.WORK_ALSO_IN_BACKGROUND_KEY] ?: DefaultValues.workAlsoInBackground,
@@ -336,6 +340,7 @@ class SettingsRepository private constructor(private val context: Context) {
     fun setLogSessionDataToFile(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.LOG_SESSION_DATA_TO_FILE_KEY, newValue) }
     fun setAlsoLogOutgoingData(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.ALSO_LOG_OUTGOING_DATA_KEY, newValue) }
     fun setMarkLoggedOutgoingData(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.MARK_LOGGED_OUTGOING_DATA_KEY, newValue) }
+    fun setZipLogFilesWhenSharing(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.ZIP_LOG_FILES_WHEN_SHARING_KEY, newValue) }
     fun setConnectToDeviceOnStart(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.CONNECT_TO_DEVICE_ON_START_KEY, newValue) }
     fun setEmailAddressForSharing(emailAddr: String) { updateSettingsDataStore(SettingsKeys.EMAIL_ADDR_FOR_SHARING_KEY, emailAddr) }
     fun setWorkAlsoInBackground(newValue: Boolean) { updateSettingsDataStore(SettingsKeys.WORK_ALSO_IN_BACKGROUND_KEY, newValue) }

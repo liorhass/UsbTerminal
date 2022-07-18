@@ -82,8 +82,7 @@ class LogFilesListViewModel(
     }
 
     data class FileSharingInfo(
-        val file: File? = null,
-        val uri: Uri? = null,
+        val uriList: List<Uri>? = null,
         val mimeType: String? = null,
         @StringRes val subjectLine:  Int = -1,
         @StringRes val chooserTitle: Int = -1,
@@ -172,26 +171,52 @@ class LogFilesListViewModel(
     fun onShareButtonClick() {
         viewModelScope.launch(Dispatchers.IO) {
             Timber.d("onShareButtonClick()")
-            val zipFile = zipSelectedFiles() ?: run {
-                Timber.e("Error when trying to zip log files")
-                return@launch // TODO: show some error message to the user
+
+            // Get list of selected files' names
+            val fileNamesList = _filesList.value.filter { it.isSelected }.map { logFileListItemModel -> logFileListItemModel.fileName }
+
+            if (mainViewModel.settingsRepository.settingsStateFlow.value.zipLogFilesWhenSharing) {
+                val zipFile = zipFiles(fileNamesList) ?: run {
+                    Timber.e("Error when trying to zip log files")
+                    return@launch // TODO: show some error message to the user
+                }
+
+                // Timber.d("absolutePath=${zipFile.absolutePath}")
+                val uri: Uri = FileProvider.getUriForFile(
+                    getApplication<UsbTerminalApplication>(),
+                    BuildConfig.APPLICATION_ID + ".fileprovider",
+                    zipFile)
+
+                // Sharing is done in the Activity and not here because sharing needs to be done
+                // from within an Activity context
+                _shouldShareFile.value = FileSharingInfo(
+                    uriList = listOf(uri),
+                    mimeType = "application/zip",
+                    subjectLine = R.string.log_files_sharing_subject_line,
+                    chooserTitle = R.string.log_files_sharing_chooser_title
+                )
+            } else {
+                val logFilesDir = LogFile.getLogFilesDir(getApplication()) ?: run {
+                    Timber.e("Error when trying to get log file directory")
+                    return@launch // TODO: show some error message to the user
+                }
+                val uriList = fileNamesList.map { fileName ->
+                    val file = File(logFilesDir, fileName)
+                    FileProvider.getUriForFile(
+                        getApplication<UsbTerminalApplication>(),
+                        BuildConfig.APPLICATION_ID + ".fileprovider",
+                        file)
+                }
+
+                // Sharing is done in the Activity and not here because sharing needs to be done
+                // from within an Activity context
+                _shouldShareFile.value = FileSharingInfo(
+                    uriList = uriList,
+                    mimeType = "text/plain",
+                    subjectLine = R.string.log_files_sharing_subject_line,
+                    chooserTitle = R.string.log_files_sharing_chooser_title
+                )
             }
-
-            // Timber.d("absolutePath=${zipFile.absolutePath}")
-            val uri: Uri = FileProvider.getUriForFile(
-                getApplication<UsbTerminalApplication>(),
-                BuildConfig.APPLICATION_ID + ".fileprovider",
-                zipFile)
-
-            // Sharing is done in the Activity and not here because sharing needs to be done
-            // from within an Activity context
-            _shouldShareFile.value = FileSharingInfo(
-                file = zipFile,
-                uri = uri,
-                mimeType = "application/zip",
-                subjectLine = R.string.log_files_sharing_subject_line,
-                chooserTitle = R.string.log_files_sharing_chooser_title
-            )
         }
     }
 
@@ -239,19 +264,17 @@ class LogFilesListViewModel(
     }
 
     /**
-     * Zip all selected files in our file-list into an output file located in the app's
+     * Zip files in fileNamesList into an output file located in the app's
      * cache directory. Output-file's name is unique.
      * @return The zipped file's File instance
      */
-    private fun zipSelectedFiles(): File? {
+    private fun zipFiles(fileNamesList: List<String>): File? {
         val cacheDir = getApplication<UsbTerminalApplication>().cacheDir
         val outputFileName = LogFile.generateFileName() + ".zip"
         val outputFile = File(cacheDir, outputFileName)
         val zos = ZipOutputStream(BufferedOutputStream(FileOutputStream(outputFile)))
         val logFilesDir = LogFile.getLogFilesDir(getApplication()) ?: return null
-
-        _filesList.value.filter { it.isSelected }.forEach { logFileListItemModel ->
-            val fileName = logFileListItemModel.fileName
+        fileNamesList.forEach { fileName ->
             // Timber.d("Zipping $fileName")
             zos.putNextEntry(ZipEntry(fileName))
             val bis = BufferedInputStream(FileInputStream(File(logFilesDir, fileName)))
