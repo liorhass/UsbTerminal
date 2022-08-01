@@ -33,7 +33,7 @@ More screenshots are available [here](Art/Screenshots/README.md)
      Input field. Keyboard input goes to that input
      field and is sent to the device only after a “Send” button is pressed
 * Partial support of ANSI/VT100 escape sequences including text coloring. See
-  [Supported escape sequences](#Supported escape sequences) below
+  [Supported escape sequences](#supported-escape-sequences) below
 * Two display modes: Text and Hex
   1. Text - “Normal” text terminal mode
   2. Hex - Data is displayed as Hex-dump
