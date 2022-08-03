@@ -81,6 +81,7 @@
     <string name="connect_all_caps">CONNECT</string>
     <string name="ctrl">Ctrl</string>
     <string name="left">Left</string>
+    <string name="tab">Tab</string>
     <string name="down">Down</string>
     <string name="up">Up</string>
     <string name="right">Right</string>

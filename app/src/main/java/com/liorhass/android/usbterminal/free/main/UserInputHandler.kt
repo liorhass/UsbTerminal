@@ -147,6 +147,11 @@ class UserInputHandler(
         val bytesToXmit = byteArrayOf(0x1B, 0x5B, 0x44) // Esc [ D
         usbCommService?.sendUsbData(bytesToXmit)
     }
+    fun onTabButtonClick() {
+        Timber.d("onTabButtonClick")
+        val bytesToXmit = byteArrayOf(0x09) // Tab
+        usbCommService?.sendUsbData(bytesToXmit)
+    }
 
     private fun processSendBuf(buf: ByteArray): ByteArray {
         @Suppress("CascadeIf")

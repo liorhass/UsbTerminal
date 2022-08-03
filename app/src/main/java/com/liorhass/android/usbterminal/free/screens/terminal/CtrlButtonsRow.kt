@@ -32,18 +32,24 @@ fun CtrlButtonsRow(
     mainViewModel: MainViewModel,
     modifier: Modifier = Modifier,
 ) {
+    val buttonModifier = Modifier
+        .widthIn(min = 40.dp)
+        .height(36.dp)
+//            .defaultMinSize(minHeight = 1.dp)
+
     Row(
         modifier = modifier
             .fillMaxWidth()
             .background(color = UsbTerminalTheme.extendedColors.ctrlButtonsLineBackgroundColor)
-            .padding(vertical = 1.dp, horizontal = 1.dp)
+            .padding(vertical = 1.dp, horizontal = 1.dp),
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         ToggleButton(
             isSelected = mainViewModel.userInputHandler.ctrlButtonIsSelected.value,
-            modifier = Modifier
+            modifier = buttonModifier,
 //                .defaultMinSize(minHeight = 1.dp)
-                .height(40.dp)
-                .padding(horizontal = 1.dp),
+//                 .height(40.dp)
+//                 .padding(horizontal = 1.dp),
             onClick = { mainViewModel.userInputHandler.onCtrlKeyButtonClick() }
         ) {
             Text(
@@ -53,16 +59,21 @@ fun CtrlButtonsRow(
                 color = MaterialTheme.colors.onBackground,
             )
         }
+        OutlinedButton(
+            modifier = buttonModifier,
+            onClick = { mainViewModel.userInputHandler.onTabButtonClick() }
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_baseline_keyboard_tab_24),
+                tint = MaterialTheme.colors.onBackground,
+                contentDescription = stringResource(R.string.tab)
+            )
+        }
 
         Spacer(modifier = Modifier.weight(1f))
 
-        val buttonModifier = Modifier
-            .width(48.dp)
-            .height(40.dp)
-//            .defaultMinSize(minHeight = 1.dp)
-
         OutlinedButton(
-            modifier = buttonModifier.padding(horizontal = 1.dp),
+            modifier = buttonModifier,
             onClick = { mainViewModel.userInputHandler.onLeftButtonClick() }
         ) {
             Icon(
@@ -73,7 +84,7 @@ fun CtrlButtonsRow(
             )
         }
         OutlinedButton(
-            modifier = buttonModifier.padding(horizontal = 1.dp),
+            modifier = buttonModifier,
             onClick = { mainViewModel.userInputHandler.onDownButtonClick() }
         ) {
             Icon(
@@ -84,7 +95,7 @@ fun CtrlButtonsRow(
             )
         }
         OutlinedButton(
-            modifier = buttonModifier.padding(horizontal = 1.dp),
+            modifier = buttonModifier,
             onClick = { mainViewModel.userInputHandler.onUpButtonClick() }
         ) {
             Icon(
@@ -95,7 +106,7 @@ fun CtrlButtonsRow(
             )
         }
         OutlinedButton(
-            modifier = buttonModifier.padding(horizontal = 1.dp),
+            modifier = buttonModifier,
             onClick = { mainViewModel.userInputHandler.onRightButtonClick() }
         ) {
             Icon(

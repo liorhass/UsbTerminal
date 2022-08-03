@@ -160,7 +160,7 @@ fun WholeLineTextToXmitInputField(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 2.dp)
+            // .padding(start = 2.dp)
     ) {
         // Timber.d("WholeLineTextToXmitInputField(): textToXmit='${textToXmit.value}'")
         BasicTextField(
@@ -172,7 +172,7 @@ fun WholeLineTextToXmitInputField(
                 background = Color.LightGray,
             ),
             modifier = Modifier
-                .padding(start = 2.dp, top = 2.dp)
+                .padding(start = 0.dp, top = 2.dp)
                 .horizontalScroll(rememberScrollState())
                 .weight(1f)
                 .focusRequester(focusRequester),
