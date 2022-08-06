@@ -94,13 +94,19 @@ fun ColumnScope.TerminalScreenHexSection(
     }
     LaunchedEffect(key1 = isKeyboardOpen) {
         if (isKeyboardOpen && atBottomBeforeKBWasOpened) {
-            lazyListState.scrollToItem(textBlocks.value.lastIndex)
+            val lastIndex = textBlocks.value.lastIndex
+            if (lastIndex >= 0) { // should be careful cause on empty array lastIndex is -1
+                lazyListState.scrollToItem(lastIndex)
+            }
         }
         onKeyboardStateChange()
     }
     if (shouldScrollToBottom.value) {
         LaunchedEffect(textBlocks.value) {
-            lazyListState.scrollToItem(textBlocks.value.lastIndex)
+            val lastIndex = textBlocks.value.lastIndex
+            if (lastIndex >= 0) { // should be careful cause on empty array lastIndex is -1
+                lazyListState.scrollToItem(lastIndex)
+            }
             onScrolledToBottom()
         }
     }
