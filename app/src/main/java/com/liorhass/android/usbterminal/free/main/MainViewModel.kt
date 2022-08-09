@@ -380,7 +380,7 @@ class MainViewModel(
             // Timber.d("bindService() rc=$rc")
         }
 
-        when(settingsData.displayType) {
+        when (settingsData.displayType) {
             // At this point settingRepository might only be initialized with default values
             // so basically we always start at TEXT mode. This may change immediately to HEX
             // after the first read of settingsRepository
