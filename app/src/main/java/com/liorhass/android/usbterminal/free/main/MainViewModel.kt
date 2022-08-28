@@ -28,6 +28,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.liorhass.android.usbterminal.free.R
+import com.liorhass.android.usbterminal.free.UsbTerminalApplication
 import com.liorhass.android.usbterminal.free.settings.model.SettingsRepository
 import com.liorhass.android.usbterminal.free.usbcommservice.IOPacketsList
 import com.liorhass.android.usbterminal.free.usbcommservice.UsbCommService
@@ -368,18 +369,6 @@ class MainViewModel(
             usbDeviceToConnectOnStartup = initialIntent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
         }
 
-        // Start the USB communication service
-        Intent(getApplication(), UsbCommService::class.java).also { intent ->
-            // We explicitly start before bind so it will stay alive when we unbind
-            application.startService(intent)
-
-            // Bind to our communication service. As the service starts and stops,
-            // calls are made to callbacks defined by serviceConnection
-            application.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
-            // val rc = application.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
-            // Timber.d("bindService() rc=$rc")
-        }
-
         when (settingsData.displayType) {
             // At this point settingRepository might only be initialized with default values
             // so basically we always start at TEXT mode. This may change immediately to HEX
@@ -411,11 +400,32 @@ class MainViewModel(
         getApplication<Application>().unbindService(serviceConnection)
     }
 
-    fun onActivityStart() {
-        // Timber.d("onActivityStart()")
-        usbCommService?.becomeBackgroundService()
+    fun onActivityResume() {
+        // Timber.d("onActivityResume()")
+        // Our Activity is now in the foreground so we can now start the service (apps are
+        // not allowed to start a background service when they're not in the foreground)
+        if (usbCommService == null) {
+            // Start the USB communication service
+            val application = getApplication<UsbTerminalApplication>()
+            Intent(getApplication(), UsbCommService::class.java).also { intent ->
+                // We explicitly start before bind so it will stay alive when we unbind
+                application.startService(intent)
+
+                // Bind to our communication service. As the service connects and disconnects,
+                // calls are made to callbacks defined by serviceConnection
+                application.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+                // val rc = application.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+                // Timber.d("bindService() rc=$rc")
+            }
+        } else {
+            // Activity got to the foreground so the service should now go to the background (remove
+            // it from the notifications area in the system's status bar)
+            usbCommService?.becomeBackgroundService()
+        }
     }
-    fun onActivityStop() {
+    fun onActivityPause() {
+        // Our Activity is going to the background, so our service should become a foreground-
+        // service (show a notification on the system's status bar)
         if (settingsData.workAlsoInBackground &&
             _usbConnectionState.value.statusCode == UsbSerialPort.ConnectStatusCode.CONNECTED) {
                 usbCommService?.becomeForegroundService()

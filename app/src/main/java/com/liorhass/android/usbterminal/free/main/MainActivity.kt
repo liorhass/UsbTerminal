@@ -99,15 +99,15 @@ class MainActivity : ComponentActivity() {
 
     // We report these lifecycle events to the viewModel in order for it to know when
     // to make the service foreground or background
-    override fun onStart() {
-        super.onStart()
-        // Timber.d("onStart()")
-        viewModel.onActivityStart() // VM needs this in order to know when to make the service a background service
+    override fun onResume() {
+        super.onResume()
+        // Timber.d("onResume()")
+        viewModel.onActivityResume() // VM needs this in order to know when to make the service a background service
     }
-    override fun onStop() {
-        super.onStop()
-        // Timber.d("onStop()")
-        viewModel.onActivityStop() // VM needs this in order to know when to make the service a foreground service
+    override fun onPause() {
+        super.onPause()
+        // Timber.d("onPause()")
+        viewModel.onActivityPause() // VM needs this in order to know when to make the service a foreground service
     }
 
     override fun onDestroy() {
