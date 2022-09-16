@@ -8,8 +8,8 @@ android {
 
     defaultConfig {
         applicationId "com.liorhass.android.usbterminal.free"
-        versionCode 212
-        versionName "2.0.24"
+        versionCode 213
+        versionName "2.0.25"
         minSdkVersion 25
         targetSdkVersion 31
 

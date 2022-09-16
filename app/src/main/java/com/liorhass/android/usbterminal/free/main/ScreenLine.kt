@@ -24,8 +24,10 @@ class ScreenLine(
 ) {
     constructor(text: String): this(text, text.length)
     constructor(text: String, maxLineLen: Int): this(maxLineLen) {
-        text.forEachIndexed { i, c -> textArray[i] = c }
         textLength = min(text.length, maxLineLen)
+        repeat(textLength) { i ->
+            textArray[i] = text[i]
+        }
     }
 
     private var textArray: CharArray = CharArray(maxLineLen)

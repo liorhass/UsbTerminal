@@ -227,8 +227,7 @@ class ScreenTextModel(
     fun clear() {
         coroutineScope.launch {
             mutex.withLock {
-                cursor.isBlinking =
-                    false // Stop cursor and hide it so it won't access a non-existent line after we delete all lines
+                cursor.isBlinking = false // Stop cursor and hide it so it won't access a non-existent line after we delete all lines
                 cursor.hide()
                 screenLines.clear()
                 totalCharCount = 0
