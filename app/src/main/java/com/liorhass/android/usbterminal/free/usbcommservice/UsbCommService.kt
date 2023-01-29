@@ -66,6 +66,7 @@ class UsbCommService : Service() {
     private class UsbCommServiceObservable : Observable() {
         // This class is only needed to convert a protected method to public, because we want to
         // hold an Observable object not inherit from it (favour composition over inheritance)
+        @Deprecated("Deprecated in Java")
         public override fun setChanged() {
             super.setChanged()
         }

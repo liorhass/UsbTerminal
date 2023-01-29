@@ -454,6 +454,7 @@ class MainViewModel(
 
     // Handle events triggered by IOPacketsList (new data received)
     inner class IOPacketsListObserver : Observer {
+        @Deprecated("Deprecated in Java")
         override fun update(o: Observable?, arg: Any?) {
             // Timber.d("IOPacketsListObserver.update() totalSize=${usbCommService?.ioPacketsList?.getTotalSize()} nextByteToProcessInIOPacketsList=(${nextByteToProcessInIOPacketsList.packetSerialNumber}, ${nextByteToProcessInIOPacketsList.offsetInPacket})")
             viewModelScope.launch(Dispatchers.Default) {

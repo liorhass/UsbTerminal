@@ -96,6 +96,7 @@ class LogFile private constructor(
 
     // Handle events triggered by IOPacketsList (new data received)
     inner class IOPacketsListObserver : Observer {
+        @Deprecated("Deprecated in Java")
         override fun update(o: Observable?, arg: Any?) {
             // Ask the IOPacketsList to go over all new data starting at nextByteToProcess and process
             // it by calling us back at handleNewIOBytes() for every packet
