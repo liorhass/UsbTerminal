@@ -123,7 +123,7 @@ dependencies {
     // Logging. Latest version here: https://mvnrepository.com/artifact/com.jakewharton.timber/timber
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
-    implementation 'com.github.mik3y:usb-serial-for-android:3.4.4'
+    implementation 'com.github.mik3y:usb-serial-for-android:3.7.0'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation "com.google.truth:truth:1.1"
