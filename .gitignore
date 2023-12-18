@@ -39,5 +39,4 @@ keystore.properties
 /gradle/wrapper/gradle-wrapper.properties
 /gradlew
 /gradlew.bat
-/settings.gradle
 /app/release

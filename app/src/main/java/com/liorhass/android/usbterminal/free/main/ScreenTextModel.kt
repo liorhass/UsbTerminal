@@ -540,6 +540,8 @@ class ScreenTextModel(
         fun moveRightToNextTabStop() {
             offsetInLine = min(maxLineLen - 1, (offsetInLine + 8) and 0xFFF8)
         }
+        /** Move cursor horizontally to offset n. */
+        fun moveToColumn(n: Int) { offsetInLine = min(maxLineLen - 1, n) }
         /** Move cursor n places downwards. */
         fun moveDown(n: Int) { lineIndex = min(screenLines.size - 1, lineIndex + n) }
         /** Move cursor n places upwards. */

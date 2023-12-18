@@ -94,6 +94,7 @@ by the ESP32’s [console module](https://docs.espressif.com/projects/esp-idf/en
 * Esc [ Pn B - Cursor Down. Pn is considered 1 if it's missing, 0 or 1
 * Esc [ Pn C - Cursor Forward. Pn is considered 1 if it's missing, 0 or 1
 * Esc [ Pn D - Cursor Backward. Pn is considered 1 if it's missing, 0 or 1
+* Esc [ Pn G - Cursor Horizontal Absolute. Pn is considered 1 if it's missing, 0 or 1
 * Esc [ Ps K - Ps 0 or missing - Erase from cursor to EOL
                Ps 1 - Erase from beginning of line to cursor
                Ps 2 - Erase line containing cursor

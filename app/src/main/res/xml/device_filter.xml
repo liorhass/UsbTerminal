@@ -76,4 +76,8 @@
     <!-- 0x04D8 / 0xFB00, 0xF7EA -->
     <usb-device vendor-id="1240" product-id="64256" />  <!-- BUS_PIRATE_V4 -->
     <usb-device vendor-id="1240" product-id="63466" />  <!-- BUS_PIRATE_V3_CUSTOM -->
+
+    <!-- 20231216: Espressif USB JTAG/serial debug unit -->
+    <!-- 0x303a / 0x1001 -->
+    <usb-device vendor-id="12346" product-id="4097" />
 </resources>
